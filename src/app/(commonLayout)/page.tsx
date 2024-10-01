@@ -1,5 +1,5 @@
 "use client";
-import { useAppSelector } from "../redux/hook";
+import { useAppSelector } from "../../redux/hook";
 
 export default function Home() {
   const { user } = useAppSelector((state) => state.auth);
