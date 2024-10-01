@@ -43,7 +43,7 @@ export default function NavbarDropdown() {
       {user ? (
         <Dropdown>
           <DropdownTrigger>
-            <Avatar className="cursor-pointer" />
+            <Avatar className="cursor-pointer" src={user?.profileImage} />
           </DropdownTrigger>
           <DropdownMenu aria-label="User Actions">
             <DropdownItem onClick={() => handleNavigation("/profile")}>

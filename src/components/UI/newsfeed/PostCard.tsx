@@ -2,24 +2,31 @@ import Image from "next/image";
 import { SlLike, SlDislike } from "react-icons/sl";
 import { BsCalendar2Date } from "react-icons/bs";
 import { FaComment } from "react-icons/fa";
+import { FaRegHeart } from "react-icons/fa";
 
 const PostCard = () => {
   return (
-    <div className="lg:w-[70%] md:w-full w-full p-">
+    <div className="w-full">
       <div className="flex flex-col md:flex-row justify-between gap-6 items-start">
         <div className="w-full md:w-2/3">
-          <div className="flex gap-2 items-center pb-3">
-            <Image
-              alt="Author Image"
-              className="object-cover rounded-full border"
-              height={30}
-              src={"https://i.ibb.co/vkVW6s0/download.png"}
-              width={30}
+          <div className="flex items-center justify-between pb-3">
+            <div className="flex gap-2 items-center">
+              <Image
+                alt="Author Image"
+                className="object-cover rounded-full border"
+                height={30}
+                src={"https://i.ibb.co/vkVW6s0/download.png"}
+                width={30}
+              />
+              <p className="font-semibold">John Doe</p>
+              <span className="bg-green-700 text-white px-3 text-sm rounded-full py-1 cursor-pointer hover:bg-green-800 transition duration-300">
+                + Follow
+              </span>
+            </div>
+            <FaRegHeart
+              className="cursor-pointer text-gray-600"
+              fontSize={"1.5rem"}
             />
-            <p className="font-semibold">John Doe</p>
-            <span className="bg-green-700 text-white px-3 text-sm rounded-full py-1 cursor-pointer hover:bg-green-800 transition duration-300">
-              + Follow
-            </span>
           </div>
           <h1 className="text-2xl font-semibold hover:text-blue-600 transition duration-200">
             Living in a State of Misery: Missouri, the Heart of America’s Racism
