@@ -20,4 +20,15 @@ export const resetPasswordValidationSchema = z.object({
     .min(1, "Password must be at least 1 characters"),
 });
 
+export const changePasswordValidationSchema = z.object({
+  oldPassword: z
+    .string()
+    .trim()
+    .min(1, "Old Password must be at least 1 characters"),
+  newPassword: z
+    .string()
+    .trim()
+    .min(1, "New Password must be at least 1 characters"),
+});
+
 export default loginValidationSchema;

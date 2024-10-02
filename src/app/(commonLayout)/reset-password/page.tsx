@@ -11,12 +11,15 @@ import GlobalLoading from "@/src/components/UI/GlobalLoading";
 import { useResetPasswordMutation } from "@/src/redux/features/auth/authApi";
 import { resetPasswordValidationSchema } from "@/src/schema/login.schema";
 import { TResponse } from "@/src/types";
+import { useAppDispatch } from "@/src/redux/hook";
+import { logout } from "@/src/redux/features/auth/authSlice";
 
 const ResetPassword = () => {
   const [resetPassword, { isLoading }] = useResetPasswordMutation(undefined);
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const router = useRouter();
+  const dipatch = useAppDispatch();
 
   const onSubmit = async (data: FieldValues) => {
     const resetPasswordData = {
@@ -38,6 +41,7 @@ const ResetPassword = () => {
       });
 
       if (res.data.success) {
+        dipatch(logout());
         router.push("/login");
       }
     }
