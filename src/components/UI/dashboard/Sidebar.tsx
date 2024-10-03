@@ -6,7 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { IoHomeOutline } from "react-icons/io5";
 import { CiGrid42 } from "react-icons/ci";
-import { IoAddCircleOutline } from "react-icons/io5";
 import { FaRegHeart } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import { IoLogOutOutline } from "react-icons/io5";
@@ -25,11 +24,6 @@ const links = [
     item: "My Content",
     icon: CiGrid42,
     link: "/dashboard/my-content",
-  },
-  {
-    item: "Create Post",
-    icon: IoAddCircleOutline,
-    link: "/dashboard/create-post",
   },
   {
     item: "Favourites",

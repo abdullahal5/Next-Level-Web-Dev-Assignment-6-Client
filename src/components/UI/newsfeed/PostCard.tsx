@@ -3,11 +3,19 @@ import { SlLike, SlDislike } from "react-icons/sl";
 import { BsCalendar2Date } from "react-icons/bs";
 import { FaComment } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
+import Link from "next/link";
 
-const PostCard = () => {
+import { IPost } from "@/src/types";
+import { formatDate } from "@/src/utils/dateFormat";
+
+interface IPostCard {
+  post: IPost;
+}
+
+const PostCard = ({ post }: IPostCard) => {
   return (
     <div className="w-full">
-      <div className="flex flex-col md:flex-row justify-between gap-6 items-start">
+      <div className="flex flex-col md:flex-row justify-between gap-6 items-center">
         <div className="w-full md:w-2/3">
           <div className="flex items-center justify-between pb-3">
             <div className="flex gap-2 items-center">
@@ -15,10 +23,14 @@ const PostCard = () => {
                 alt="Author Image"
                 className="object-cover rounded-full border"
                 height={30}
-                src={"https://i.ibb.co/vkVW6s0/download.png"}
+                src={
+                  post.author.profilePicture as
+                    | string
+                    | "https://i.ibb.co/vkVW6s0/download.png"
+                }
                 width={30}
               />
-              <p className="font-semibold">John Doe</p>
+              <p className="font-semibold">{post.author.username}</p>
               <span className="bg-green-700 text-white px-3 text-sm rounded-full py-1 cursor-pointer hover:bg-green-800 transition duration-300">
                 + Follow
               </span>
@@ -29,12 +41,9 @@ const PostCard = () => {
             />
           </div>
           <h1 className="text-2xl font-semibold hover:text-blue-600 transition duration-200">
-            Living in a State of Misery: Missouri, the Heart of America’s Racism
+            <Link href={`/newsfeed/${post._id}`}>{post.title}</Link>
           </h1>
-          <p className="text-sm text-gray-500 mt-1">
-            From Lloyd Gaines to Marcellus Williams: Missouri’s Legacy of
-            Lynching Black Men
-          </p>
+          <p className="text-sm text-gray-500 mt-1">{post.bio}</p>
           <div className="pt-4">
             <div className="flex items-center gap-3 lg:w-[60%] md:w-[60%] w-full justify-between text-gray-600">
               <div className="flex items-center gap-1">
@@ -42,19 +51,19 @@ const PostCard = () => {
                   className="cursor-pointer"
                   fontSize={"1.2rem"}
                 />
-                <span className="text-xs">23-04-2024</span>
+                <span className="text-xs">{formatDate(post.createdAt)}</span>
               </div>
               <div className="flex items-center gap-1">
                 <SlLike className="cursor-pointer" fontSize={"1.2rem"} />
-                <span className="text-xs">23</span>
+                <span className="text-xs">{post.upvotes}</span>
               </div>
               <div className="flex items-center gap-1">
                 <SlDislike className="cursor-pointer" fontSize={"1.2rem"} />
-                <span className="text-xs">73</span>
+                <span className="text-xs">{post.downvotes}</span>
               </div>
               <div className="flex items-center gap-1">
                 <FaComment className="cursor-pointer" fontSize={"1.2rem"} />
-                <span className="text-xs">273</span>
+                <span className="text-xs">{post.commentsCount}</span>
               </div>
             </div>
           </div>
@@ -64,12 +73,12 @@ const PostCard = () => {
             alt="Blog Image"
             className="rounded-md w-full h-auto object-cover shadow-md transition-transform duration-300 hover:scale-105"
             height={400}
-            src="https://i.ibb.co/Jz8JV0C/river-landscape-illustration-pixel-art-style-23-2151793116.jpg"
+            src={post.images[0]}
             width={400}
           />
         </div>
       </div>
-      <hr className="my-14 dark:border-gray-300 border-black opacity-30" />
+      <hr className="my-10 dark:border-gray-300 border-black opacity-30" />
     </div>
   );
 };

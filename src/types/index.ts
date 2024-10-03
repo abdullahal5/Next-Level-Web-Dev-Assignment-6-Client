@@ -33,3 +33,47 @@ export type TResponse<T> = {
   };
   error?: TError;
 };
+
+export interface IComment {
+  postId: string;
+  userId: string;
+  username: string;
+  profileImage?: string;
+  commentText: string;
+  upvotes: number;
+  downvotes: number;
+}
+
+export interface IAuthor {
+  _id: string;
+  email: string;
+  username: string;
+  profilePicture?: string;
+  role: string;
+  followers: string[];
+  following: string[];
+  isVerified: boolean;
+  verificationBadge?: string | null;
+  gender: string;
+  interests: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface IPost {
+  _id: string;
+  title: string;
+  bio: string;
+  content: string;
+  author: IAuthor;
+  comments: IComment[];
+  tags: string[];
+  category: string;
+  upvotes: number;
+  downvotes: number;
+  commentsCount: number;
+  isPremium: boolean;
+  images: string[];
+  createdAt: string;
+  updatedAt: string;
+}
