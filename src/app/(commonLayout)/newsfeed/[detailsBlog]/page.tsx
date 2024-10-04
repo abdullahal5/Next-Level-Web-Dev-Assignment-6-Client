@@ -81,7 +81,7 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
                         size="sm"
                       />
                     ) : data?.author?.followers?.includes(
-                        user?.userId as string
+                        user?.userId as string,
                       ) ? (
                       "Unfollow"
                     ) : (

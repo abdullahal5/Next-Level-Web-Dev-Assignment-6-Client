@@ -81,9 +81,9 @@ const PostCard = ({ post }: IPostCard) => {
               <Spinner size="sm" />
             ) : (
               <FaRegHeart
-                onClick={() => handleFavouritePost(post._id)}
                 className={`cursor-pointer  ${getMe?.data?.favourite.includes(post._id) ? "text-red-700" : "text-gray-600"}`}
                 fontSize={"1.5rem"}
+                onClick={() => handleFavouritePost(post._id)}
               />
             )}
           </div>

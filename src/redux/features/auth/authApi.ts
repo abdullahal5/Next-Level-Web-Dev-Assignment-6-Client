@@ -69,7 +69,7 @@ const authApi = baseApi.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: ["post", "user"]
+      providesTags: ["post", "user"],
     }),
   }),
 });
