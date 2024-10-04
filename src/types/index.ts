@@ -52,6 +52,7 @@ export interface IAuthor {
   role: string;
   followers: string[];
   following: string[];
+  favourite: IPost[];
   isVerified: boolean;
   verificationBadge?: string | null;
   gender: string;

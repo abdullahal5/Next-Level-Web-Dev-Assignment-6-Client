@@ -8,11 +8,11 @@ import { IPost } from "@/src/types";
 import { useGetAllPostQuery } from "@/src/redux/features/post/postApi";
 
 const FetchAllPosts = () => {
-  const { data: allPosts, isFetching } = useGetAllPostQuery(undefined);
+  const { data: allPosts, isLoading } = useGetAllPostQuery(undefined);
 
   return (
     <div>
-      {isFetching ? (
+      {isLoading ? (
         <div className="flex justify-center items-center h-screen">
           <Spinner size="lg" />
         </div>

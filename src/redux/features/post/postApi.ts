@@ -7,8 +7,16 @@ const postApi = baseApi.injectEndpoints({
         url: "/post/get-all",
         method: "GET",
       }),
+      providesTags: ["post"],
+    }),
+    getSinlePost: builder.query({
+      query: (args) => ({
+        url: `/post/get-single/${args._id}`,
+        method: "GET",
+      }),
+      providesTags: ["post"],
     }),
   }),
 });
 
-export const { useGetAllPostQuery } = postApi;
+export const { useGetAllPostQuery, useGetSinlePostQuery } = postApi;

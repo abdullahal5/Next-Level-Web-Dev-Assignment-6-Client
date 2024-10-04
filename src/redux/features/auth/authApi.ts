@@ -8,6 +8,7 @@ const authApi = baseApi.injectEndpoints({
         method: "POST",
         body: userInfo,
       }),
+      invalidatesTags: ["user"],
     }),
     login: builder.mutation({
       query: (userInfo) => ({
@@ -15,6 +16,7 @@ const authApi = baseApi.injectEndpoints({
         method: "POST",
         body: userInfo,
       }),
+      invalidatesTags: ["user"],
     }),
     forgetPassword: builder.mutation({
       query: (userInfo) => ({
@@ -24,25 +26,50 @@ const authApi = baseApi.injectEndpoints({
       }),
     }),
     resetPassword: builder.mutation({
-      query: (userInfo) => {
-        return {
-          url: "/auth/reset-password",
-          method: "POST",
-          body: { email: userInfo?.email, newPassword: userInfo?.newPassword },
-          headers: {
-            Authorization: `Bearer ${userInfo?.token}`,
-          },
-        };
-      },
+      query: (userInfo) => ({
+        url: "/auth/reset-password",
+        method: "POST",
+        body: { email: userInfo?.email, newPassword: userInfo?.newPassword },
+        headers: {
+          Authorization: `Bearer ${userInfo?.token}`,
+        },
+      }),
     }),
     changePassword: builder.mutation({
-      query: (userInfo) => {
+      query: (userInfo) => ({
+        url: "/auth/change-password",
+        method: "POST",
+        body: userInfo,
+      }),
+    }),
+    followAndUnfollowUser: builder.mutation({
+      query: (args) => ({
+        url: `/auth/followunfollow`,
+        method: "PUT",
+        body: {
+          id: args,
+        },
+      }),
+      invalidatesTags: ["post", "user"],
+    }),
+    favouritePost: builder.mutation({
+      query: (args) => ({
+        url: `/auth/favourite-toggle`,
+        method: "PUT",
+        body: {
+          id: args,
+        },
+      }),
+      invalidatesTags: ["post", "user"],
+    }),
+    getMe: builder.query({
+      query: (args) => {
         return {
-          url: "/auth/change-password",
-          method: "POST",
-          body: userInfo,
+          url: `/auth/get-single-user/${args._id}`,
+          method: "GET",
         };
       },
+      providesTags: ["post", "user"]
     }),
   }),
 });
@@ -53,4 +80,7 @@ export const {
   useForgetPasswordMutation,
   useResetPasswordMutation,
   useChangePasswordMutation,
+  useFollowAndUnfollowUserMutation,
+  useFavouritePostMutation,
+  useGetMeQuery,
 } = authApi;

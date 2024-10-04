@@ -1,18 +1,47 @@
+"use client";
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+
 import Image from "next/image";
 import { SlLike, SlDislike } from "react-icons/sl";
 import { BsCalendar2Date } from "react-icons/bs";
 import { FaComment } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
 import Link from "next/link";
+import { Chip } from "@nextui-org/chip";
+import { Spinner } from "@nextui-org/spinner";
 
 import { IPost } from "@/src/types";
 import { formatDate } from "@/src/utils/dateFormat";
+import {
+  useFavouritePostMutation,
+  useFollowAndUnfollowUserMutation,
+  useGetMeQuery,
+} from "@/src/redux/features/auth/authApi";
+import { useAppSelector } from "@/src/redux/hook";
 
 interface IPostCard {
   post: IPost;
 }
 
 const PostCard = ({ post }: IPostCard) => {
+  const [followAndUnfollow, { isLoading: followLoading }] =
+    useFollowAndUnfollowUserMutation();
+  const { user } = useAppSelector((state) => state.auth);
+  const [favouritePost, { isLoading: favouriteLoading }] =
+    useFavouritePostMutation();
+  const { data: getMe } = useGetMeQuery({ _id: user?.userId });
+
+  const followAndUnfollowUser = async (followOwnerId: string) => {
+    if (followOwnerId) {
+      await followAndUnfollow(followOwnerId);
+    }
+  };
+
+  const handleFavouritePost = async (id: string) => {
+    await favouritePost(id);
+  };
+
   return (
     <div className="w-full">
       <div className="flex flex-col md:flex-row justify-between gap-6 items-center">
@@ -31,18 +60,46 @@ const PostCard = ({ post }: IPostCard) => {
                 width={30}
               />
               <p className="font-semibold">{post.author.username}</p>
-              <span className="bg-green-700 text-white px-3 text-sm rounded-full py-1 cursor-pointer hover:bg-green-800 transition duration-300">
-                + Follow
+              <span
+                className="bg-green-700 text-white px-3 text-sm rounded-full py-1 cursor-pointer hover:bg-green-800 transition duration-300"
+                onClick={() => followAndUnfollowUser(post?.author?._id)}
+              >
+                {followLoading ? (
+                  <Spinner
+                    className={`${followLoading ? "cursor-not-allowed" : "cursor-pointer"}`}
+                    color="white"
+                    size="sm"
+                  />
+                ) : post.author?.followers?.includes(user?.userId as string) ? (
+                  "Unfollow"
+                ) : (
+                  "+ Follow"
+                )}
               </span>
             </div>
-            <FaRegHeart
-              className="cursor-pointer text-gray-600"
-              fontSize={"1.5rem"}
-            />
+            {favouriteLoading ? (
+              <Spinner size="sm" />
+            ) : (
+              <FaRegHeart
+                onClick={() => handleFavouritePost(post._id)}
+                className={`cursor-pointer  ${getMe?.data?.favourite.includes(post._id) ? "text-red-700" : "text-gray-600"}`}
+                fontSize={"1.5rem"}
+              />
+            )}
           </div>
-          <h1 className="text-2xl font-semibold hover:text-blue-600 transition duration-200">
-            <Link href={`/newsfeed/${post._id}`}>{post.title}</Link>
-          </h1>
+          <div className="flex items-center">
+            <h1 className="text-2xl inline-block font-semibold hover:text-blue-600 transition duration-200">
+              <Link href={`/newsfeed/${post._id}`}>{post.title}</Link>
+            </h1>
+            {post.isPremium ? (
+              <Chip className="ml-3" color="primary" variant="flat">
+                Premium
+              </Chip>
+            ) : (
+              ""
+            )}
+          </div>
+
           <p className="text-sm text-gray-500 mt-1">{post.bio}</p>
           <div className="pt-4">
             <div className="flex items-center gap-3 lg:w-[60%] md:w-[60%] w-full justify-between text-gray-600">
