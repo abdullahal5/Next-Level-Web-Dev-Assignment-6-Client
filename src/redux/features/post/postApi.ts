@@ -16,7 +16,21 @@ const postApi = baseApi.injectEndpoints({
       }),
       providesTags: ["post"],
     }),
+    upvoteDownvote: builder.mutation({
+      query: (args) => {
+        return {
+          url: `/post/upvoteDownvote/${args._id}`,
+          method: "PUT",
+          body: { type: args.type },
+        };
+      },
+      invalidatesTags: ["post"],
+    }),
   }),
 });
 
-export const { useGetAllPostQuery, useGetSinlePostQuery } = postApi;
+export const {
+  useGetAllPostQuery,
+  useGetSinlePostQuery,
+  useUpvoteDownvoteMutation,
+} = postApi;

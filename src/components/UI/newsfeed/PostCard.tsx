@@ -19,6 +19,7 @@ import {
   useGetMeQuery,
 } from "@/src/redux/features/auth/authApi";
 import { useAppSelector } from "@/src/redux/hook";
+import { useUpvoteDownvoteMutation } from "@/src/redux/features/post/postApi";
 
 interface IPostCard {
   post: IPost;
@@ -30,6 +31,7 @@ const PostCard = ({ post }: IPostCard) => {
   const { user } = useAppSelector((state) => state.auth);
   const [favouritePost, { isLoading: favouriteLoading }] =
     useFavouritePostMutation();
+  const [upAndDownVote] = useUpvoteDownvoteMutation();
   const { data: getMe } = useGetMeQuery({ _id: user?.userId });
 
   const followAndUnfollowUser = async (followOwnerId: string) => {
@@ -40,6 +42,23 @@ const PostCard = ({ post }: IPostCard) => {
 
   const handleFavouritePost = async (id: string) => {
     await favouritePost(id);
+  };
+
+  const upvotes = async (id: string) => {
+    const data = {
+      _id: id,
+      type: "increment",
+    };
+
+    await upAndDownVote(data);
+  };
+  const downvotes = async (id: string) => {
+    const data = {
+      _id: id,
+      type: "decrement",
+    };
+
+    await upAndDownVote(data);
   };
 
   return (
@@ -110,11 +129,17 @@ const PostCard = ({ post }: IPostCard) => {
                 />
                 <span className="text-xs">{formatDate(post.createdAt)}</span>
               </div>
-              <div className="flex items-center gap-1">
+              <div
+                className="flex items-center gap-1"
+                onClick={() => upvotes(post._id)}
+              >
                 <SlLike className="cursor-pointer" fontSize={"1.2rem"} />
                 <span className="text-xs">{post.upvotes}</span>
               </div>
-              <div className="flex items-center gap-1">
+              <div
+                className="flex items-center gap-1"
+                onClick={() => downvotes(post._id)}
+              >
                 <SlDislike className="cursor-pointer" fontSize={"1.2rem"} />
                 <span className="text-xs">{post.downvotes}</span>
               </div>

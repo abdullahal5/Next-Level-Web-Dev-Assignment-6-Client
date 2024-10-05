@@ -36,12 +36,12 @@ export type TResponse<T> = {
 
 export interface IComment {
   postId: string;
-  userId: string;
-  username: string;
-  profileImage?: string;
+  userId: IAuthor;
   commentText: string;
   upvotes: number;
   downvotes: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface IAuthor {
