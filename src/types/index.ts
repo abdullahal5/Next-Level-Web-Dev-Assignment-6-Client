@@ -35,6 +35,7 @@ export type TResponse<T> = {
 };
 
 export interface IComment {
+  _id: string;
   postId: string;
   userId: IAuthor;
   commentText: string;
@@ -45,11 +46,15 @@ export interface IComment {
 }
 
 export interface IAuthor {
+  post: string;
+  socialMediaLinks: any;
   _id: string;
   email: string;
   username: string;
   profilePicture?: string;
   role: string;
+  bio: string;
+  gardeningExperienceLevel: [];
   followers: string[];
   following: string[];
   favourite: IPost[];
@@ -57,6 +62,9 @@ export interface IAuthor {
   verificationBadge?: string | null;
   gender: string;
   interests: string[];
+  location: string;
+  phone: string;
+  dateOfBirth: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -16,8 +16,15 @@ import { toast } from "sonner";
 
 import { formatDate } from "@/src/utils/dateFormat";
 import { IPost } from "@/src/types";
-import { useGetSinlePostQuery } from "@/src/redux/features/post/postApi";
-import { useFollowAndUnfollowUserMutation } from "@/src/redux/features/auth/authApi";
+import {
+  useGetSinlePostQuery,
+  useUpvoteDownvoteMutation,
+} from "@/src/redux/features/post/postApi";
+import {
+  useFavouritePostMutation,
+  useFollowAndUnfollowUserMutation,
+  useGetMeQuery,
+} from "@/src/redux/features/auth/authApi";
 import { useAppSelector } from "@/src/redux/hook";
 import GHForm from "@/src/components/form/GHForm";
 import TTextarea from "@/src/components/form/GHTextArea";
@@ -39,7 +46,14 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
   const [postComment, { isLoading: commentLoading }] =
     useCreateCommentMutation();
 
+  const [upAndDownVote] = useUpvoteDownvoteMutation();
+
   const data = getSinglePostData?.data as IPost;
+
+  const { data: getMe } = useGetMeQuery({ _id: user?.userId });
+
+  const [favouritePost, { isLoading: favouriteLoading }] =
+    useFavouritePostMutation();
 
   const postUrl = `localhost:3000/newsfeed/${data?._id}`;
 
@@ -70,6 +84,27 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
     if (res.data.success) {
       toast.success("Comment added successfully");
     }
+  };
+
+  const handleFavouritePost = async (id: string) => {
+    await favouritePost(id);
+  };
+
+  const upvotes = async (id: string) => {
+    const data = {
+      _id: id,
+      type: "increment",
+    };
+
+    await upAndDownVote(data);
+  };
+  const downvotes = async (id: string) => {
+    const data = {
+      _id: id,
+      type: "decrement",
+    };
+
+    await upAndDownVote(data);
   };
 
   return (
@@ -111,7 +146,7 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
                           size="sm"
                         />
                       ) : data?.author?.followers?.includes(
-                          user?.userId as string,
+                          user?.userId as string
                         ) ? (
                         "Unfollow"
                       ) : (
@@ -126,23 +161,28 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
                 </div>
                 <div className="flex items-center justify-center gap-5">
                   <div className="flex items-center gap-1">
-                    <FaRegHeart
-                      className="cursor-pointer text-gray-500"
-                      fontSize={"1.2rem"}
-                    />
+                    {favouriteLoading ? (
+                      <Spinner size="sm" />
+                    ) : (
+                      <FaRegHeart
+                        className={`cursor-pointer  ${getMe?.data?.favourite.includes(data._id) ? "text-red-700" : "text-gray-600"}`}
+                        fontSize={"1.5rem"}
+                        onClick={() => handleFavouritePost(data._id)}
+                      />
+                    )}
                   </div>
-                  <div className="flex items-center gap-1">
-                    <SlLike
-                      className="cursor-pointer text-gray-500"
-                      fontSize={"1.2rem"}
-                    />
+                  <div
+                    className="flex items-center gap-1"
+                    onClick={() => upvotes(data._id)}
+                  >
+                    <SlLike className="cursor-pointer" fontSize={"1.2rem"} />
                     <span className="text-xs">{data.upvotes}</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <SlDislike
-                      className="cursor-pointer text-gray-500"
-                      fontSize={"1.2rem"}
-                    />
+                  <div
+                    className="flex items-center gap-1"
+                    onClick={() => downvotes(data._id)}
+                  >
+                    <SlDislike className="cursor-pointer" fontSize={"1.2rem"} />
                     <span className="text-xs">{data.downvotes}</span>
                   </div>
                   <div className="flex items-center gap-1">

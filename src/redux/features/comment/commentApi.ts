@@ -12,7 +12,17 @@ const commentApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ["post"],
     }),
+    deleteComment: builder.mutation({
+      query: (args) => {
+        return {
+          url: `/comment/delete/${args}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: ["post"],
+    }),
   }),
 });
 
-export const { useCreateCommentMutation } = commentApi;
+export const { useCreateCommentMutation, useDeleteCommentMutation } =
+  commentApi;

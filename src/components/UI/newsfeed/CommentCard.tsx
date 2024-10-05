@@ -5,6 +5,7 @@ import { Button } from "@nextui-org/button";
 import { useAppSelector } from "@/src/redux/hook";
 import { IComment } from "@/src/types";
 import { formatDate } from "@/src/utils/dateFormat";
+import { useDeleteCommentMutation } from "@/src/redux/features/comment/commentApi";
 
 interface IProps {
   comment: IComment;
@@ -12,6 +13,12 @@ interface IProps {
 
 const CommentCard = ({ comment }: IProps) => {
   const { user } = useAppSelector((state) => state.auth);
+  const [commentDelete, { isLoading: commentdelteLoading }] =
+    useDeleteCommentMutation();
+
+  const handleDelete = (id: string) => {
+    commentDelete(id);
+  };
 
   return (
     <div className="flex items-start">
@@ -37,7 +44,13 @@ const CommentCard = ({ comment }: IProps) => {
               <Button size="sm" variant="bordered">
                 Edit
               </Button>
-              <Button color="danger" size="sm" variant="bordered">
+              <Button
+                onClick={() => handleDelete(comment._id)}
+                color="danger"
+                size="sm"
+                variant="bordered"
+                isLoading={commentdelteLoading}
+              >
                 Delete
               </Button>
             </>
