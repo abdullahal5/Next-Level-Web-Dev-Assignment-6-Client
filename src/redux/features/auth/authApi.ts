@@ -71,6 +71,14 @@ const authApi = baseApi.injectEndpoints({
       },
       providesTags: ["post", "user"],
     }),
+    getAllUser: builder.query({
+      query: () => {
+        return {
+          url: `/auth/get-all-user`,
+          method: "GET",
+        };
+      },
+    }),
   }),
 });
 
@@ -83,4 +91,5 @@ export const {
   useFollowAndUnfollowUserMutation,
   useFavouritePostMutation,
   useGetMeQuery,
+  useGetAllUserQuery,
 } = authApi;

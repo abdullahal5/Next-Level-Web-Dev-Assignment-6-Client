@@ -10,7 +10,8 @@ import GlobalModal from "@/src/components/UI/GlobalModal";
 import GHInput from "@/src/components/form/GHInput";
 import GHForm from "@/src/components/form/GHForm";
 import GHSelect from "@/src/components/form/GHSelect";
-import Tiptap from "@/src/components/TipTap";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const categoryOptions = [
   {
@@ -62,14 +63,46 @@ const categoryOptions = [
     label: "Watering Systems",
   },
 ];
+
+const modules = {
+  toolbar: [
+    [{ header: [1, 2, false] }],
+    ["bold", "italic", "underline", "strike", "blockquote"],
+    [
+      { list: "ordered" },
+      { list: "bullet" },
+      { indent: "-1" },
+      { indent: "+1" },
+    ],
+    ["link", "image"],
+    ["clean"],
+  ],
+};
+
+const formats = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "blockquote",
+  "list",
+  "bullet",
+  "indent",
+  "link",
+  "image",
+];
+
 const MyContent = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isPremium, setIsPremium] = useState<boolean>(false);
+  const [value, setValue] = useState("");
 
   const onSubmit = (data: FieldValues) => {
     const postData = {
       ...data,
       isPremium: isPremium,
+      content: value
     };
 
     console.log(postData);
@@ -85,7 +118,7 @@ const MyContent = () => {
       <GlobalModal
         action="Create Post"
         isOpen={isOpen}
-        size="lg"
+        size="xl"
         title="New Content"
         onClose={onClose}
       >
@@ -108,9 +141,16 @@ const MyContent = () => {
             Available for premium user only
           </Checkbox>
 
-          <Tiptap />
+          <ReactQuill
+            theme="snow"
+            modules={modules}
+            formats={formats}
+            value={value}
+            onChange={setValue}
+            className="pt-3 rounded-lg border-black max-h-96 overflow-y-auto"
+          />
           <Button
-            className="my-3 w-full rounded-md font-semibold text-default"
+            className="my-3 w-full rounded-md font-semibold"
             color="primary"
             size="lg"
             type="submit"

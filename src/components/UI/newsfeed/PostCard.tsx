@@ -34,6 +34,10 @@ const PostCard = ({ post }: IPostCard) => {
   const [upAndDownVote] = useUpvoteDownvoteMutation();
   const { data: getMe } = useGetMeQuery({ _id: user?.userId });
 
+  const postFavId = getMe?.data?.favourite.map(
+    (item: { _id: any }) => item._id,
+  );
+
   const followAndUnfollowUser = async (followOwnerId: string) => {
     if (followOwnerId) {
       await followAndUnfollow(followOwnerId);
@@ -100,7 +104,7 @@ const PostCard = ({ post }: IPostCard) => {
               <Spinner size="sm" />
             ) : (
               <FaRegHeart
-                className={`cursor-pointer  ${getMe?.data?.favourite.includes(post._id) ? "text-red-700" : "text-gray-600"}`}
+                className={`cursor-pointer  ${postFavId?.includes(post?._id) ? "text-red-700" : "text-gray-600"}`}
                 fontSize={"1.5rem"}
                 onClick={() => handleFavouritePost(post._id)}
               />

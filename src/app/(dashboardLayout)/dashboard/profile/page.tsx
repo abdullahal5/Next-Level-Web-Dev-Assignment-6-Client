@@ -17,10 +17,11 @@ import { Button } from "@nextui-org/button";
 import { Divider } from "@nextui-org/divider";
 import { Progress } from "@nextui-org/progress";
 import Link from "next/link";
+import { Spinner } from "@nextui-org/spinner";
+
 import { useAppSelector } from "@/src/redux/hook";
 import { useGetMeQuery } from "@/src/redux/features/auth/authApi";
 import { IAuthor } from "@/src/types";
-import { Spinner } from "@nextui-org/spinner";
 import { formatDate } from "@/src/utils/dateFormat";
 
 export default function Component() {
@@ -59,11 +60,11 @@ export default function Component() {
       ) : (
         <>
           <Progress
-            value={profileCompletion}
-            label={`Profile Completion (${profileCompletion}%)`}
-            color="success"
-            size="md"
             className="pb-5"
+            color="success"
+            label={`Profile Completion (${profileCompletion}%)`}
+            size="md"
+            value={profileCompletion}
           />
           <Card className="shadow-lg">
             <CardBody className="p-6">

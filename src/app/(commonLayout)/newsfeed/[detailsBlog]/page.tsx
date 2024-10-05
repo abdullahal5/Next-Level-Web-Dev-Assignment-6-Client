@@ -55,6 +55,10 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
   const [favouritePost, { isLoading: favouriteLoading }] =
     useFavouritePostMutation();
 
+  const postFavId = getMe?.data?.favourite.map(
+    (item: { _id: any }) => item._id,
+  );
+
   const postUrl = `localhost:3000/newsfeed/${data?._id}`;
 
   const copyToClipboard = () => {
@@ -146,7 +150,7 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
                           size="sm"
                         />
                       ) : data?.author?.followers?.includes(
-                          user?.userId as string
+                          user?.userId as string,
                         ) ? (
                         "Unfollow"
                       ) : (
@@ -165,7 +169,7 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
                       <Spinner size="sm" />
                     ) : (
                       <FaRegHeart
-                        className={`cursor-pointer  ${getMe?.data?.favourite.includes(data._id) ? "text-red-700" : "text-gray-600"}`}
+                        className={`cursor-pointer  ${postFavId?.includes(data?._id) ? "text-red-700" : "text-gray-600"}`}
                         fontSize={"1.5rem"}
                         onClick={() => handleFavouritePost(data._id)}
                       />

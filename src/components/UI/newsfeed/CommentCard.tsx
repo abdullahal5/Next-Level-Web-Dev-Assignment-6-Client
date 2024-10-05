@@ -45,11 +45,11 @@ const CommentCard = ({ comment }: IProps) => {
                 Edit
               </Button>
               <Button
-                onClick={() => handleDelete(comment._id)}
                 color="danger"
+                isLoading={commentdelteLoading}
                 size="sm"
                 variant="bordered"
-                isLoading={commentdelteLoading}
+                onClick={() => handleDelete(comment._id)}
               >
                 Delete
               </Button>
