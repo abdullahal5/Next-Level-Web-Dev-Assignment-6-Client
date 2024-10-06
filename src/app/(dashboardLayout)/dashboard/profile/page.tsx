@@ -128,16 +128,18 @@ export default function Component() {
                         </Button>
                       </div>
                     </Link>
-                    <div className="w-full mt-4">
-                      <Button
-                        className="w-full"
-                        color="secondary"
-                        variant="solid"
-                        onClick={handleVerify}
-                      >
-                        Verify
-                      </Button>
-                    </div>
+                    <Link className="w-full" href={"/subscription"}>
+                      <div className="w-full mt-4">
+                        <Button
+                          className="w-full"
+                          color="secondary"
+                          variant="solid"
+                          onClick={handleVerify}
+                        >
+                          Verify
+                        </Button>
+                      </div>
+                    </Link>
                   </div>
                 </div>
 
