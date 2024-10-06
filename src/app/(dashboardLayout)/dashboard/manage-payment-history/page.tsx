@@ -1,9 +1,5 @@
 const PaymentHistroy = () => {
-   return (
-      <div>
-         payment History
-      </div>
-   );
+  return <div>payment History</div>;
 };
 
 export default PaymentHistroy;

@@ -71,6 +71,7 @@ export interface IAuthor {
   gender: string;
   interests: string;
   location: string;
+  status: "Active" | "Blocked"
   phone: string;
   dateOfBirth: string;
   createdAt: string;
@@ -106,7 +107,7 @@ export interface editUserData {
   gender: string;
   facebook?: string;
   twitter?: string;
-  interest: string
+  interest: string;
   instagram?: string;
   linkedin?: string;
   profilePicture?: string;

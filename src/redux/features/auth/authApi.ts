@@ -78,6 +78,7 @@ const authApi = baseApi.injectEndpoints({
           method: "GET",
         };
       },
+      providesTags: ["user"],
     }),
     updateUser: builder.mutation({
       query: (args) => {
@@ -88,6 +89,26 @@ const authApi = baseApi.injectEndpoints({
         };
       },
       invalidatesTags: ["post", "user"],
+    }),
+    deletUser: builder.mutation({
+      query: (args) => {
+        return {
+          url: `/auth/delete-single-user/${args}`,
+          method: "DELETE",
+          body: args,
+        };
+      },
+      invalidatesTags: ["user"],
+    }),
+    statusToggle: builder.mutation({
+      query: (args) => {
+        return {
+          url: `/auth/status-toggle/${args}`,
+          method: "PUT",
+          body: { args },
+        };
+      },
+      invalidatesTags: ["user"],
     }),
   }),
 });
@@ -103,4 +124,6 @@ export const {
   useGetMeQuery,
   useGetAllUserQuery,
   useUpdateUserMutation,
+  useDeletUserMutation,
+  useStatusToggleMutation,
 } = authApi;

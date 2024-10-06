@@ -76,7 +76,7 @@ const PostCard = ({ post }: IPostCard) => {
                 className="object-cover rounded-full border"
                 height={30}
                 src={
-                  post.author.profilePicture as
+                  post?.author?.profilePicture as
                     | string
                     | "https://i.ibb.co/vkVW6s0/download.png"
                 }

@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { IoHomeOutline } from "react-icons/io5";
@@ -14,10 +14,12 @@ import { IoClose } from "react-icons/io5";
 import { usePathname, useRouter } from "next/navigation";
 import { RiEditLine } from "react-icons/ri";
 import { IoKeyOutline } from "react-icons/io5";
+import { Button } from "@nextui-org/button";
+
+import GlobalLoading from "../GlobalLoading";
+
 import { useAppDispatch, useAppSelector } from "@/src/redux/hook";
 import { logout } from "@/src/redux/features/auth/authSlice";
-import { Button } from "@nextui-org/button";
-import GlobalLoading from "../GlobalLoading";
 
 const userRoutes = [
   {
@@ -91,10 +93,15 @@ const Sidebar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const [isMounted, setIsMounted] = useState(false);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const links = user?.role === "admin" ? adminRoutes : userRoutes;
   const closeSidebar = () => {
@@ -105,6 +112,10 @@ const Sidebar = () => {
     dispatch(logout());
     router.push("/");
   };
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <>
@@ -175,8 +186,8 @@ const Sidebar = () => {
                 </div>
 
                 <Button
-                  onClick={() => handleLogout()}
                   className="flex items-center group gap-2 px-4 cursor-pointer py-3 rounded-md border text-lg text-red-600 hover:border-red-500 duration-300"
+                  onClick={() => handleLogout()}
                 >
                   <p className="transition-transform duration-200 transform group-hover:scale-110">
                     <IoLogOutOutline fontSize={"1.4rem"} />
@@ -222,8 +233,8 @@ const Sidebar = () => {
               </div>
 
               <button
-                onClick={() => handleLogout()}
                 className="flex items-center lg:mt-0 mt-5 group gap-2 px-4 cursor-pointer py-3 rounded-md border text-lg text-red-600 hover:border-red-500 duration-300"
+                onClick={() => handleLogout()}
               >
                 <p className="transition-transform duration-200 transform group-hover:scale-110">
                   <IoLogOutOutline fontSize={"1.4rem"} />

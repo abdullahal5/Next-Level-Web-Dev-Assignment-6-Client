@@ -17,6 +17,7 @@ import { TResponse } from "@/src/types";
 import { verifyToken } from "@/src/utils/jwt";
 import { setUser } from "@/src/redux/features/auth/authSlice";
 import { useAppDispatch } from "@/src/redux/hook";
+import uploadImageToCloudinary from "@/src/utils/uploadImageToCloudinary";
 
 const genderOptions = [
   { key: "Male", label: "Male" },
@@ -35,15 +36,17 @@ const RegisterPage = () => {
     let registerData;
 
     if (imageFile) {
+      const imageUrl = await uploadImageToCloudinary(imageFile);
       registerData = {
         ...data,
-        imageFile,
+        profilePicture: imageUrl,
       };
     } else {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       registerData = data;
     }
-    const res = (await createUser(data)) as unknown as TResponse<any>;
+
+    const res = (await createUser(registerData)) as unknown as TResponse<any>;
 
     if (res.error) {
       toast.error(res.error.data.message, {
@@ -112,11 +115,11 @@ const RegisterPage = () => {
             </div>
             <div className="py-3">
               <GHSelect
-                size="lg"
-                radius="sm"
                 label="Gender"
                 name="gender"
                 options={genderOptions}
+                radius="sm"
+                size="lg"
               />
             </div>
             <div className="min-w-fit flex-1">

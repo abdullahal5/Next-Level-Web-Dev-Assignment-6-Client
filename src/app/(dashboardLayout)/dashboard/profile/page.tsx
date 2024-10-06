@@ -22,10 +22,16 @@ import { useAppSelector } from "@/src/redux/hook";
 import { useGetMeQuery } from "@/src/redux/features/auth/authApi";
 import { IAuthor } from "@/src/types";
 import { formatDate } from "@/src/utils/dateFormat";
+import { useSearchParams } from "next/navigation";
 
 export default function Component() {
   const { user } = useAppSelector((state) => state.auth);
-  const { data: getMe, isFetching } = useGetMeQuery({ _id: user?.userId });
+  const searchParams = useSearchParams();
+  const queryId = searchParams.get("userId");
+
+  const { data: getMe, isFetching } = useGetMeQuery({
+    _id: queryId ? queryId : user?.userId
+  });
 
   const getMeData = getMe?.data as IAuthor;
 

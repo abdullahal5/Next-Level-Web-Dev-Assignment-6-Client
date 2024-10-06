@@ -127,11 +127,11 @@ const MyContent = () => {
           <div className="flex items-center gap-2.5 py-3">
             <GHInput label="Tags" name="tags" type="text" />
             <GHSelect
-              size="lg"
-              radius="sm"
               label="Category"
               name="category"
               options={categoryOptions}
+              radius="sm"
+              size="lg"
               type="text"
             />
           </div>

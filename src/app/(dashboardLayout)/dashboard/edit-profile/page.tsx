@@ -8,6 +8,8 @@ import { Divider } from "@nextui-org/divider";
 import { Spinner } from "@nextui-org/spinner";
 import { useState } from "react";
 import { FieldValues } from "react-hook-form";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 import { useAppDispatch, useAppSelector } from "@/src/redux/hook";
 import {
@@ -20,9 +22,7 @@ import GHSelect from "@/src/components/form/GHSelect";
 import GHForm from "@/src/components/form/GHForm";
 import GHDate from "@/src/components/form/GHDate";
 import uploadImageToCloudinary from "@/src/utils/uploadImageToCloudinary";
-import { toast } from "sonner";
 import { dateToISO } from "@/src/utils/dateToISO";
-import { useRouter } from "next/navigation";
 import { setUser } from "@/src/redux/features/auth/authSlice";
 import { verifyToken } from "@/src/utils/jwt";
 
@@ -47,7 +47,7 @@ export default function EditProfile() {
 
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | undefined>(
-    getMeData?.profilePicture
+    getMeData?.profilePicture,
   );
 
   const onSubmit = async (data: FieldValues) => {
@@ -83,7 +83,7 @@ export default function EditProfile() {
           setUser({
             token: res.data,
             user: decoded,
-          })
+          }),
         );
 
         router.push("/dashboard/profile");
@@ -136,8 +136,8 @@ export default function EditProfile() {
                       <Avatar
                         alt={getMeData?.username}
                         className="w-32 h-32 text-large mb-4"
-                        src={previewImage}
                         name="profilePicture"
+                        src={previewImage}
                       />
                       <input
                         accept="image/*"
@@ -151,8 +151,6 @@ export default function EditProfile() {
                       <GHInput label="Bio" name="bio" type="text" />
 
                       <GHSelect
-                        size="sm"
-                        radius={"sm"}
                         label="Gardening Experience"
                         name="gardeningExperienceLevel"
                         options={[
@@ -160,14 +158,16 @@ export default function EditProfile() {
                           { label: "Intermediate", key: "Intermediate" },
                           { label: "Expert", key: "Expert" },
                         ]}
+                        radius={"sm"}
+                        size="sm"
                       />
 
                       <Button
                         className="w-full mt-4"
                         color="success"
+                        isLoading={updateLoading}
                         type="submit"
                         variant="solid"
-                        isLoading={updateLoading}
                       >
                         Save Profile
                       </Button>
@@ -189,13 +189,13 @@ export default function EditProfile() {
                       <GHSelect
                         label="Gender"
                         name="gender"
-                        size="sm"
-                        radius={"sm"}
                         options={[
                           { label: "Male", key: "Male" },
                           { label: "Female", key: "Female" },
                           { label: "Other", key: "Other" },
                         ]}
+                        radius={"sm"}
+                        size="sm"
                       />
                     </div>
 
@@ -207,10 +207,10 @@ export default function EditProfile() {
                     <GHSelect
                       label="Gardening Interest"
                       name="interests"
-                      size="lg"
                       options={gardeningInterests}
-                      type="text"
                       radius={"sm"}
+                      size="lg"
+                      type="text"
                     />
 
                     <Divider className="my-6" />

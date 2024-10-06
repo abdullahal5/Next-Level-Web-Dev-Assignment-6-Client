@@ -13,8 +13,8 @@ const GHDate = ({ label, name, defaultValue }: IProps) => {
       render={({ field: { value, ...fileds } }) => (
         <DatePicker
           className="min-w-full sm:min-w-[225px]"
-          label={label}
           isRequired={true}
+          label={label}
           {...fileds}
         />
       )}
