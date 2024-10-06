@@ -25,8 +25,7 @@ export default function GHInput({
     <Input
       {...register(name)}
       defaultValue={defaultValue}
-      errorMessage={errors[name] ? (errors[name].message as string) : ""}
-      isInvalid={!!errors[name]}
+      errorMessage={(errors[name]?.message as string) ?? ""}
       label={label}
       required={required}
       size={size}

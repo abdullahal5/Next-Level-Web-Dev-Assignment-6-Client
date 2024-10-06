@@ -17,12 +17,12 @@ import { Divider } from "@nextui-org/divider";
 import { Progress } from "@nextui-org/progress";
 import Link from "next/link";
 import { Spinner } from "@nextui-org/spinner";
+import { useSearchParams } from "next/navigation";
 
 import { useAppSelector } from "@/src/redux/hook";
 import { useGetMeQuery } from "@/src/redux/features/auth/authApi";
 import { IAuthor } from "@/src/types";
 import { formatDate } from "@/src/utils/dateFormat";
-import { useSearchParams } from "next/navigation";
 
 export default function Component() {
   const { user } = useAppSelector((state) => state.auth);
@@ -30,7 +30,7 @@ export default function Component() {
   const queryId = searchParams.get("userId");
 
   const { data: getMe, isFetching } = useGetMeQuery({
-    _id: queryId ? queryId : user?.userId
+    _id: queryId ? queryId : user?.userId,
   });
 
   const getMeData = getMe?.data as IAuthor;
@@ -55,6 +55,8 @@ export default function Component() {
     return !!field && (!Array.isArray(field) || field.length > 0);
   }).length;
   const profileCompletion = Math.round((filledFields / fields.length) * 100);
+
+  const handleVerify = () => {};
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -118,7 +120,7 @@ export default function Component() {
                     <Link className="w-full" href="/dashboard/edit-profile">
                       <div className="w-full">
                         <Button
-                          className="w-full"
+                          className="w-full text-white"
                           color="success"
                           variant="solid"
                         >
@@ -126,6 +128,16 @@ export default function Component() {
                         </Button>
                       </div>
                     </Link>
+                    <div className="w-full mt-4">
+                      <Button
+                        className="w-full"
+                        color="secondary"
+                        variant="solid"
+                        onClick={handleVerify}
+                      >
+                        Verify
+                      </Button>
+                    </div>
                   </div>
                 </div>
 

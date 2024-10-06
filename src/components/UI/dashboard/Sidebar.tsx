@@ -81,6 +81,11 @@ const adminRoutes = [
     link: "/dashboard/change-password",
   },
   {
+    item: "Edit Profile",
+    icon: RiEditLine,
+    link: "/dashboard/edit-profile",
+  },
+  {
     item: "Home",
     icon: IoHomeOutline,
     link: "/",

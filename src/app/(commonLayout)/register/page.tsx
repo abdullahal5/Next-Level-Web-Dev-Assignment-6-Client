@@ -37,6 +37,7 @@ const RegisterPage = () => {
 
     if (imageFile) {
       const imageUrl = await uploadImageToCloudinary(imageFile);
+
       registerData = {
         ...data,
         profilePicture: imageUrl,
@@ -64,7 +65,7 @@ const RegisterPage = () => {
         setUser({
           token: res.data?.data?.accessToken,
           user: decoded,
-        })
+        }),
       );
 
       router.push("/");

@@ -22,7 +22,7 @@ const GHSelect = ({ options, name, label, disabled }: IProps) => {
     <Select
       {...register(name)}
       className="min-w-full sm:min-w-[225px]"
-      errorMessage={errors[name] ? (errors[name].message as string) : ""}
+      errorMessage={(errors[name]?.message as string) ?? ""}
       isDisabled={disabled}
       isInvalid={!!errors[name]}
       label={label}

@@ -71,7 +71,7 @@ export interface IAuthor {
   gender: string;
   interests: string;
   location: string;
-  status: "Active" | "Blocked"
+  status: "Active" | "Blocked";
   phone: string;
   dateOfBirth: string;
   createdAt: string;

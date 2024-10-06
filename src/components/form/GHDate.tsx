@@ -10,6 +10,7 @@ const GHDate = ({ label, name, defaultValue }: IProps) => {
     <Controller
       defaultValue={defaultValue}
       name={name}
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       render={({ field: { value, ...fileds } }) => (
         <DatePicker
           className="min-w-full sm:min-w-[225px]"

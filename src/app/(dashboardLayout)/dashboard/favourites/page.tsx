@@ -36,8 +36,7 @@ const Favourite = () => {
     currentUser?.userId && { _id: currentUser.userId },
   );
   const favouriteData = (getMe?.data?.favourite as IPost[]) || [];
-  const [favouritePost, { isLoading: favouriteLoading }] =
-    useFavouritePostMutation();
+  const [favouritePost] = useFavouritePostMutation();
 
   const handleDelete = async (id: string) => {
     await favouritePost(id);

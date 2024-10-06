@@ -1,67 +1,35 @@
-"use client";
+"use client"; // Ensure this component is treated as a client component
 import { Button } from "@nextui-org/button";
 import { useDisclosure } from "@nextui-org/modal";
-import { FieldValues } from "react-hook-form";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { Checkbox } from "@nextui-org/checkbox";
 import { useState } from "react";
-import ReactQuill from "react-quill";
+import dynamic from "next/dynamic";
 
 import GlobalModal from "@/src/components/UI/GlobalModal";
 import GHInput from "@/src/components/form/GHInput";
 import GHForm from "@/src/components/form/GHForm";
 import GHSelect from "@/src/components/form/GHSelect";
+
+const ReactQuill = dynamic(() => import("react-quill"), {
+  ssr: false,
+});
+
 import "react-quill/dist/quill.snow.css";
 
 const categoryOptions = [
-  {
-    key: "flowers",
-    label: "Flowers",
-  },
-  {
-    key: "vegetables",
-    label: "Vegetables",
-  },
-  {
-    key: "herbs",
-    label: "Herbs",
-  },
-  {
-    key: "shrubs",
-    label: "Shrubs",
-  },
-  {
-    key: "trees",
-    label: "Trees",
-  },
-  {
-    key: "succulents",
-    label: "Succulents & Cacti",
-  },
-  {
-    key: "indoor-plants",
-    label: "Indoor Plants",
-  },
-  {
-    key: "garden-tools",
-    label: "Garden Tools",
-  },
-  {
-    key: "fertilizers",
-    label: "Fertilizers",
-  },
-  {
-    key: "pots-planters",
-    label: "Pots & Planters",
-  },
-  {
-    key: "seeds",
-    label: "Seeds",
-  },
-  {
-    key: "watering-systems",
-    label: "Watering Systems",
-  },
+  { key: "flowers", label: "Flowers" },
+  { key: "vegetables", label: "Vegetables" },
+  { key: "herbs", label: "Herbs" },
+  { key: "shrubs", label: "Shrubs" },
+  { key: "trees", label: "Trees" },
+  { key: "succulents", label: "Succulents & Cacti" },
+  { key: "indoor-plants", label: "Indoor Plants" },
+  { key: "garden-tools", label: "Garden Tools" },
+  { key: "fertilizers", label: "Fertilizers" },
+  { key: "pots-planters", label: "Pots & Planters" },
+  { key: "seeds", label: "Seeds" },
+  { key: "watering-systems", label: "Watering Systems" },
 ];
 
 const modules = {
@@ -98,14 +66,12 @@ const MyContent = () => {
   const [isPremium, setIsPremium] = useState<boolean>(false);
   const [value, setValue] = useState("");
 
-  const onSubmit = (data: FieldValues) => {
-    const postData = {
-      ...data,
-      isPremium: isPremium,
-      content: value,
-    };
-
-    console.log(postData);
+  const onSubmit = () => {
+    // const postData = {
+    //   ...data,
+    //   isPremium: isPremium,
+    //   content: value,
+    // };
   };
 
   return (

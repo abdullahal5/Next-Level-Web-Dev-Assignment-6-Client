@@ -10,16 +10,17 @@ import {
   TableRow,
   TableCell,
 } from "@nextui-org/table";
-import { DeleteIcon, EditIcon, EyeIcon } from "@/src/components/icons";
 import { Chip, ChipProps } from "@nextui-org/chip";
 import { Avatar } from "@nextui-org/avatar";
+import { useRouter } from "next/navigation";
+
+import { DeleteIcon, EyeIcon } from "@/src/components/icons";
 import {
   useDeletUserMutation,
   useGetAllUserQuery,
   useStatusToggleMutation,
 } from "@/src/redux/features/auth/authApi";
 import { IAuthor } from "@/src/types";
-import { useRouter } from "next/navigation";
 
 const columns = [
   { name: "NAME", uid: "name" },
@@ -43,7 +44,6 @@ export default function AllUser() {
   const router = useRouter();
   const [deleteSingleUser] = useDeletUserMutation();
   const [toggleStatus] = useStatusToggleMutation();
-
 
   const deleteUser = async (id: string) => {
     await deleteSingleUser(id);
@@ -144,7 +144,7 @@ export default function AllUser() {
           }
       }
     },
-    []
+    [],
   );
 
   if (!users) {

@@ -15,7 +15,7 @@ const TTextarea = ({ label, name, variant = "bordered" }: IProps) => {
     <Textarea
       label={label}
       {...register(name)}
-      errorMessage={errors[name] ? (errors[name].message as string) : ""}
+      errorMessage={(errors[name]?.message as string) ?? ""}
       isInvalid={!!errors[name]}
       maxRows={6}
       variant={variant}

@@ -133,12 +133,14 @@ export default function EditProfile() {
                 <div className="flex flex-col lg:flex-row gap-8">
                   <div className="lg:w-1/3">
                     <div className="flex flex-col items-center text-center space-y-5">
-                      <Avatar
-                        alt={getMeData?.username}
-                        className="w-32 h-32 text-large mb-4"
-                        name="profilePicture"
-                        src={previewImage}
-                      />
+                      {getMeData && (
+                        <Avatar
+                          alt={getMeData?.username}
+                          className="w-32 h-32 text-large mb-4"
+                          name="profilePicture"
+                          src={previewImage}
+                        />
+                      )}
                       <input
                         accept="image/*"
                         className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
