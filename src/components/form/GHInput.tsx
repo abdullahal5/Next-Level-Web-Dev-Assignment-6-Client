@@ -14,6 +14,7 @@ export default function GHInput({
   type = "text",
   label,
   name,
+  defaultValue,
 }: IProps) {
   const {
     register,
@@ -23,6 +24,7 @@ export default function GHInput({
   return (
     <Input
       {...register(name)}
+      defaultValue={defaultValue}
       errorMessage={errors[name] ? (errors[name].message as string) : ""}
       isInvalid={!!errors[name]}
       label={label}

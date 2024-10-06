@@ -5,12 +5,12 @@ import { FieldValues } from "react-hook-form";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { Checkbox } from "@nextui-org/checkbox";
 import { useState } from "react";
+import ReactQuill from "react-quill";
 
 import GlobalModal from "@/src/components/UI/GlobalModal";
 import GHInput from "@/src/components/form/GHInput";
 import GHForm from "@/src/components/form/GHForm";
 import GHSelect from "@/src/components/form/GHSelect";
-import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 const categoryOptions = [
@@ -102,7 +102,7 @@ const MyContent = () => {
     const postData = {
       ...data,
       isPremium: isPremium,
-      content: value
+      content: value,
     };
 
     console.log(postData);
@@ -127,6 +127,8 @@ const MyContent = () => {
           <div className="flex items-center gap-2.5 py-3">
             <GHInput label="Tags" name="tags" type="text" />
             <GHSelect
+              size="lg"
+              radius="sm"
               label="Category"
               name="category"
               options={categoryOptions}
@@ -142,12 +144,12 @@ const MyContent = () => {
           </Checkbox>
 
           <ReactQuill
-            theme="snow"
-            modules={modules}
+            className="pt-3 rounded-lg border-black max-h-96 overflow-y-auto"
             formats={formats}
+            modules={modules}
+            theme="snow"
             value={value}
             onChange={setValue}
-            className="pt-3 rounded-lg border-black max-h-96 overflow-y-auto"
           />
           <Button
             className="my-3 w-full rounded-md font-semibold"

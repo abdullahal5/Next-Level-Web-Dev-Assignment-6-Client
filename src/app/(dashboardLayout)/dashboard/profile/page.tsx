@@ -9,7 +9,6 @@ import {
   FaInstagram,
   FaTwitter,
   FaLinkedin,
-  FaLeaf,
 } from "react-icons/fa";
 import { Card, CardBody } from "@nextui-org/card";
 import { Avatar } from "@nextui-org/avatar";
@@ -26,11 +25,9 @@ import { formatDate } from "@/src/utils/dateFormat";
 
 export default function Component() {
   const { user } = useAppSelector((state) => state.auth);
-  const { data: getMe, isLoading } = useGetMeQuery({ _id: user?.userId });
+  const { data: getMe, isFetching } = useGetMeQuery({ _id: user?.userId });
 
   const getMeData = getMe?.data as IAuthor;
-
-  console.log(getMeData?.dateOfBirth);
 
   const fields = [
     getMeData?.username,
@@ -55,7 +52,7 @@ export default function Component() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
-      {isLoading ? (
+      {isFetching ? (
         <Spinner size="lg" />
       ) : (
         <>
@@ -157,16 +154,9 @@ export default function Component() {
                     Gardening Interests
                   </h3>
                   <div className="flex flex-wrap gap-3 mb-6">
-                    {getMeData?.interests?.length > 0 ? (
-                      getMeData?.interests.map((interest) => (
-                        <div key={interest} className="flex items-center gap-2">
-                          <FaLeaf className="text-success" />
-                          {interest}
-                        </div>
-                      ))
-                    ) : (
-                      <p>No interests provided</p>
-                    )}
+                    {!getMeData?.interests
+                      ? "Not Provided"
+                      : getMeData?.interests}
                   </div>
 
                   <Divider className="my-6" />
@@ -181,7 +171,7 @@ export default function Component() {
                         {getMeData?.socialMediaLinks?.facebook && (
                           <a
                             aria-label="Facebook"
-                            href={getMeData?.socialMediaLinks.facebook}
+                            href={getMeData?.socialMediaLinks?.facebook}
                             rel="noopener noreferrer"
                             target="_blank"
                           >
@@ -191,7 +181,7 @@ export default function Component() {
                         {getMeData?.socialMediaLinks?.twitter && (
                           <a
                             aria-label="Twitter"
-                            href={getMeData?.socialMediaLinks.twitter}
+                            href={getMeData?.socialMediaLinks?.twitter}
                             rel="noopener noreferrer"
                             target="_blank"
                           >
@@ -201,7 +191,7 @@ export default function Component() {
                         {getMeData?.socialMediaLinks?.instagram && (
                           <a
                             aria-label="Instagram"
-                            href={getMeData?.socialMediaLinks.instagram}
+                            href={getMeData?.socialMediaLinks?.instagram}
                             rel="noopener noreferrer"
                             target="_blank"
                           >
@@ -211,7 +201,7 @@ export default function Component() {
                         {getMeData?.socialMediaLinks?.linkedin && (
                           <a
                             aria-label="LinkedIn"
-                            href={getMeData?.socialMediaLinks.linkedin}
+                            href={getMeData?.socialMediaLinks?.linkedin}
                             rel="noopener noreferrer"
                             target="_blank"
                           >

@@ -61,7 +61,7 @@ const RegisterPage = () => {
         setUser({
           token: res.data?.data?.accessToken,
           user: decoded,
-        }),
+        })
       );
 
       router.push("/");
@@ -111,7 +111,13 @@ const RegisterPage = () => {
               <GHInput label="Password" name="password" type="password" />
             </div>
             <div className="py-3">
-              <GHSelect label="Gender" name="gender" options={genderOptions} />
+              <GHSelect
+                size="lg"
+                radius="sm"
+                label="Gender"
+                name="gender"
+                options={genderOptions}
+              />
             </div>
             <div className="min-w-fit flex-1">
               <label

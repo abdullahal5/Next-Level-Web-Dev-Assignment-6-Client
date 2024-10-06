@@ -11,6 +11,7 @@ export interface IInput {
   type?: string;
   label: string;
   name: string;
+  defaultValue?: string;
   disabled?: boolean;
 }
 
@@ -45,9 +46,16 @@ export interface IComment {
   updatedAt: string;
 }
 
+export interface ISocialMediaLinks {
+  facebook?: string;
+  twitter?: string;
+  instagram?: string;
+  linkedin?: string;
+}
+
 export interface IAuthor {
   post: string;
-  socialMediaLinks: any;
+  socialMediaLinks: ISocialMediaLinks;
   _id: string;
   email: string;
   username: string;
@@ -61,7 +69,7 @@ export interface IAuthor {
   isVerified: boolean;
   verificationBadge?: string | null;
   gender: string;
-  interests: string[];
+  interests: string;
   location: string;
   phone: string;
   dateOfBirth: string;
@@ -85,4 +93,21 @@ export interface IPost {
   images: string[];
   createdAt: string;
   updatedAt: string;
+}
+
+export interface editUserData {
+  _id: string | undefined;
+  username: string;
+  bio: string;
+  gardeningExperienceLevel: string;
+  location: string;
+  phone: string;
+  dateOfBirth: Date | undefined | string | null;
+  gender: string;
+  facebook?: string;
+  twitter?: string;
+  interest: string
+  instagram?: string;
+  linkedin?: string;
+  profilePicture?: string;
 }

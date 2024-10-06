@@ -12,7 +12,11 @@ import {
 } from "@nextui-org/table";
 import { Tooltip } from "@nextui-org/tooltip";
 import { Chip } from "@nextui-org/chip";
-import { useGetMeQuery } from "@/src/redux/features/auth/authApi";
+
+import {
+  useFavouritePostMutation,
+  useGetMeQuery,
+} from "@/src/redux/features/auth/authApi";
 import { useAppSelector } from "@/src/redux/hook";
 import { IPost } from "@/src/types";
 import { DeleteIcon } from "@/src/components/icons";
@@ -29,12 +33,14 @@ const columns = [
 const Favourite = () => {
   const { user: currentUser } = useAppSelector((state) => state.auth);
   const { data: getMe, isLoading: favouriteDataLoading } = useGetMeQuery(
-    currentUser?.userId && { _id: currentUser.userId }
+    currentUser?.userId && { _id: currentUser.userId },
   );
   const favouriteData = (getMe?.data?.favourite as IPost[]) || [];
+  const [favouritePost, { isLoading: favouriteLoading }] =
+    useFavouritePostMutation();
 
-  const handleDelete = (id: string) => {
-    console.log(`Deleting post with ID: ${id}`);
+  const handleDelete = async (id: string) => {
+    await favouritePost(id);
   };
 
   const renderCell = React.useCallback(
@@ -67,7 +73,7 @@ const Favourite = () => {
           return null;
       }
     },
-    []
+    [],
   );
 
   return (
@@ -89,14 +95,14 @@ const Favourite = () => {
           </TableHeader>
           <TableBody
             isLoading={favouriteDataLoading}
+            items={favouriteData}
             loadingContent={
               <TableRow>
-                <TableCell colSpan={columns.length} align="center">
+                <TableCell align="center" colSpan={columns.length}>
                   Loading...
                 </TableCell>
               </TableRow>
             }
-            items={favouriteData}
           >
             {(item) => (
               <TableRow key={item._id}>

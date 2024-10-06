@@ -79,6 +79,16 @@ const authApi = baseApi.injectEndpoints({
         };
       },
     }),
+    updateUser: builder.mutation({
+      query: (args) => {
+        return {
+          url: `/auth/update-single-user/${args._id}`,
+          method: "PUT",
+          body: args,
+        };
+      },
+      invalidatesTags: ["post", "user"],
+    }),
   }),
 });
 
@@ -92,4 +102,5 @@ export const {
   useFavouritePostMutation,
   useGetMeQuery,
   useGetAllUserQuery,
+  useUpdateUserMutation,
 } = authApi;

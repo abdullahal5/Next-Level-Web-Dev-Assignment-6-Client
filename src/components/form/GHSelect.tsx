@@ -1,53 +1,37 @@
 import { Select, SelectItem } from "@nextui-org/select";
-import { Controller, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 
 import { IInput } from "@/src/types";
 
+interface IProps {
+  variant?: "underlined" | "faded" | "flat" | "bordered";
+  size?: "sm" | "md" | "lg";
+  radius: "none" | "sm" | "md" | "lg" | "full";
+}
 interface IProps extends IInput {
-  options: {
-    key: string;
-    label: string;
-  }[];
+  options: { key: string; label: string }[];
 }
 
-const GHSelect = ({
-  options,
-  label,
-  name,
-  variant = "bordered",
-  disabled,
-}: IProps) => {
-  const { control } = useFormContext();
+const GHSelect = ({ options, name, label, disabled }: IProps) => {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
 
   return (
-    <Controller
-      control={control}
-      name={name}
-      render={({ field, fieldState }) => (
-        <>
-          <Select
-            {...field}
-            className="min-w-full sm:min-w-[225px]"
-            isDisabled={disabled}
-            isInvalid={!!fieldState.error}
-            label={label}
-            variant={variant}
-          >
-            {options.map((option) => (
-              <SelectItem
-                key={option.key}
-                className="min-w-full sm:min-w-[225px]"
-              >
-                {option.label}
-              </SelectItem>
-            ))}
-          </Select>
-          {fieldState.error && (
-            <p className="text-red-500 text-xs">{fieldState.error.message}</p>
-          )}
-        </>
-      )}
-    />
+    <Select
+      {...register(name)}
+      className="min-w-full sm:min-w-[225px]"
+      errorMessage={errors[name] ? (errors[name].message as string) : ""}
+      isDisabled={disabled}
+      isInvalid={!!errors[name]}
+      label={label}
+      variant="bordered"
+    >
+      {options.map((options) => (
+        <SelectItem key={options.key}>{options.label}</SelectItem>
+      ))}
+    </Select>
   );
 };
 
