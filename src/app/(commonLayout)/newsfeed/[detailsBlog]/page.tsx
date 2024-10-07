@@ -31,6 +31,8 @@ import TTextarea from "@/src/components/form/GHTextArea";
 import { commentValidationSchema } from "@/src/schema/comment.schema";
 import { useCreateCommentMutation } from "@/src/redux/features/comment/commentApi";
 import CommentCard from "@/src/components/UI/newsfeed/CommentCard";
+import { Chip } from "@nextui-org/chip";
+import { useRouter } from "next/navigation";
 
 const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
   const [copied, setCopied] = useState(false);
@@ -48,6 +50,8 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
 
   const [upAndDownVote] = useUpvoteDownvoteMutation();
 
+  const router = useRouter();
+
   const data = getSinglePostData?.data as IPost;
 
   const { data: getMe } = useGetMeQuery({ _id: user?.userId });
@@ -56,7 +60,7 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
     useFavouritePostMutation();
 
   const postFavId = getMe?.data?.favourite.map(
-    (item: { _id: any }) => item._id,
+    (item: { _id: any }) => item._id
   );
 
   const postUrl = `localhost:3000/newsfeed/${data?._id}`;
@@ -111,6 +115,8 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
     await upAndDownVote(data);
   };
 
+  const isPremiumAndNotVerified = data?.isPremium && !data?.author?.isVerified;
+
   return (
     <>
       {isLoading ? (
@@ -119,12 +125,45 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
         </div>
       ) : (
         <>
-          {" "}
+          {isPremiumAndNotVerified && (
+            <div className="bg-black/80 h-screen fixed inset-0 z-[999] backdrop-blur-md flex items-center justify-center">
+              <div className="bg-gray-900 border border-gray-700 rounded-lg shadow-2xl p-8 max-w-sm text-center">
+                <h2 className="text-4xl font-extrabold text-white mb-4">
+                  Premium Content
+                </h2>
+                <p className="text-lg text-gray-400 mb-6">
+                  This content is exclusive to premium users. Please upgrade to
+                  access it.
+                </p>
+                <div className="flex items-center gap-3 justify-center">
+                  <Button
+                    onClick={() => router.push("/subscription")}
+                    className="bg-blue-600 text-white hover:bg-blue-700 transition duration-300 rounded-md px-6 py-3 font-semibold shadow-md "
+                  >
+                    Upgrade Now
+                  </Button>
+                  <Button
+                    onClick={() => router.back()}
+                    className="bg-gray-600 text-white hover:bg-gray-700 transition duration-300 rounded-md px-6 py-3 font-semibold"
+                  >
+                    Go Back
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
           <div className="max-w-3xl mx-auto rounded-lg p-3 my-5 border border-gray-800">
             <h1 className="text-5xl font-semibold">{data?.title}</h1>
             <p className="text-lg text-gray-400 border-gray-600 py-7">
               {data?.bio}
             </p>
+            {data?.isPremium ? (
+              <Chip className="mb-5" color="primary" variant="flat">
+                Premium
+              </Chip>
+            ) : (
+              ""
+            )}
             <div className="flex gap-3 border-b border-t py-3 border-gray-600">
               <div>
                 <Image
@@ -139,24 +178,26 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
                 <div>
                   <div className="flex items-center gap-3">
                     <p className="text-lg">{data?.author?.username}</p>
-                    <span
-                      className="bg-green-700 text-white px-3 text-sm rounded-full py-1 cursor-pointer hover:bg-green-800 transition duration-300"
-                      onClick={() => followAndUnfollowUser(data?.author?._id)}
-                    >
-                      {followLoading ? (
-                        <Spinner
-                          className={`${followLoading ? "cursor-not-allowed" : "cursor-pointer"}`}
-                          color="white"
-                          size="sm"
-                        />
-                      ) : data?.author?.followers?.includes(
-                          user?.userId as string,
-                        ) ? (
-                        "Unfollow"
-                      ) : (
-                        "+ Follow"
-                      )}
-                    </span>
+                    {user?.userId !== data.author._id && (
+                      <span
+                        className="bg-green-700 text-white px-3 text-sm rounded-full py-1 cursor-pointer hover:bg-green-800 transition duration-300"
+                        onClick={() => followAndUnfollowUser(data?.author?._id)}
+                      >
+                        {followLoading ? (
+                          <Spinner
+                            className={`${followLoading ? "cursor-not-allowed" : "cursor-pointer"}`}
+                            color="white"
+                            size="sm"
+                          />
+                        ) : data?.author?.followers?.includes(
+                            user?.userId as string
+                          ) ? (
+                          "Unfollow"
+                        ) : (
+                          "+ Follow"
+                        )}
+                      </span>
+                    )}
                   </div>
                   <p className="text-xs text-gray-600">
                     {data?.author?.followers?.length} followers .{" "}

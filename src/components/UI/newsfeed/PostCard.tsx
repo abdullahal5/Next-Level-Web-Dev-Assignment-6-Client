@@ -35,7 +35,7 @@ const PostCard = ({ post }: IPostCard) => {
   const { data: getMe } = useGetMeQuery({ _id: user?.userId });
 
   const postFavId = getMe?.data?.favourite.map(
-    (item: { _id: any }) => item._id,
+    (item: { _id: any }) => item._id
   );
 
   const followAndUnfollowUser = async (followOwnerId: string) => {
@@ -83,22 +83,26 @@ const PostCard = ({ post }: IPostCard) => {
                 width={30}
               />
               <p className="font-semibold">{post.author.username}</p>
-              <span
-                className="bg-green-700 text-white px-3 text-sm rounded-full py-1 cursor-pointer hover:bg-green-800 transition duration-300"
-                onClick={() => followAndUnfollowUser(post?.author?._id)}
-              >
-                {followLoading ? (
-                  <Spinner
-                    className={`${followLoading ? "cursor-not-allowed" : "cursor-pointer"}`}
-                    color="white"
-                    size="sm"
-                  />
-                ) : post.author?.followers?.includes(user?.userId as string) ? (
-                  "Unfollow"
-                ) : (
-                  "+ Follow"
-                )}
-              </span>
+              {user?.userId !== post.author?._id && (
+                <span
+                  className="bg-green-700 text-white px-3 text-sm rounded-full py-1 cursor-pointer hover:bg-green-800 transition duration-300"
+                  onClick={() => followAndUnfollowUser(post?.author?._id)}
+                >
+                  {followLoading ? (
+                    <Spinner
+                      className={`${followLoading ? "cursor-not-allowed" : "cursor-pointer"}`}
+                      color="white"
+                      size="sm"
+                    />
+                  ) : post.author?.followers?.includes(
+                      user?.userId as string
+                    ) ? (
+                    "Unfollow"
+                  ) : (
+                    "+ Follow"
+                  )}
+                </span>
+              )}
             </div>
             {favouriteLoading ? (
               <Spinner size="sm" />

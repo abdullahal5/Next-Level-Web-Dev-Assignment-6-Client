@@ -10,6 +10,7 @@ import {
   FaTwitter,
   FaLinkedin,
 } from "react-icons/fa";
+import { FaCheckCircle } from "react-icons/fa";
 import { Card, CardBody } from "@nextui-org/card";
 import { Avatar } from "@nextui-org/avatar";
 import { Button } from "@nextui-org/button";
@@ -76,11 +77,18 @@ export default function Component() {
               <div className="flex flex-col lg:flex-row gap-8">
                 <div className="lg:w-1/3">
                   <div className="flex flex-col items-center text-center">
-                    <Avatar
-                      alt={getMeData?.username}
-                      className="w-32 h-32 text-large mb-4"
-                      src={getMeData?.profilePicture}
-                    />
+                    <div className="relative flex flex-col items-center">
+                      <Avatar
+                        alt={getMeData?.username}
+                        className="w-32 h-32 text-large mb-4 border-4 border-blue-500"
+                        src={getMeData?.profilePicture}
+                      />
+                      {getMeData?.isVerified && (
+                        <div className="absolute bottom-1 border border-blue-600 right-0 mb-1 ml-1 p-1 rounded-full">
+                          <FaCheckCircle className="w-5 h-5 text-blue-500" />
+                        </div>
+                      )}
+                    </div>
                     <h2 className="text-2xl font-bold mb-2">
                       {getMeData?.username}
                     </h2>
@@ -117,29 +125,37 @@ export default function Component() {
                         <p className="text-small text-default-500">Posts</p>
                       </div>
                     </div>
-                    <Link className="w-full" href="/dashboard/edit-profile">
-                      <div className="w-full">
-                        <Button
-                          className="w-full text-white"
-                          color="success"
-                          variant="solid"
-                        >
-                          Edit Profile
-                        </Button>
-                      </div>
-                    </Link>
-                    <Link className="w-full" href={"/subscription"}>
-                      <div className="w-full mt-4">
-                        <Button
-                          className="w-full"
-                          color="secondary"
-                          variant="solid"
-                          onClick={handleVerify}
-                        >
-                          Verify
-                        </Button>
-                      </div>
-                    </Link>
+                    {getMeData?._id === user?.userId && (
+                      <>
+                        <Link className="w-full" href="/dashboard/edit-profile">
+                          <div className="w-full">
+                            <Button
+                              className="w-full text-white"
+                              color="success"
+                              variant="solid"
+                            >
+                              Edit Profile
+                            </Button>
+                          </div>
+                        </Link>
+                        <Link className="w-full" href={"/subscription"}>
+                          {getMeData?.isVerified === false ? (
+                            <div className="w-full mt-4">
+                              <Button
+                                className="w-full"
+                                color="secondary"
+                                variant="solid"
+                                onClick={handleVerify}
+                              >
+                                Verify
+                              </Button>
+                            </div>
+                          ) : (
+                            ""
+                          )}
+                        </Link>
+                      </>
+                    )}
                   </div>
                 </div>
 

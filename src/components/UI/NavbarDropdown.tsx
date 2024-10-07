@@ -43,7 +43,10 @@ export default function NavbarDropdown() {
       {user ? (
         <Dropdown>
           <DropdownTrigger>
-            <Avatar className="cursor-pointer" src={user?.profileImage} />
+            <Avatar
+              className="cursor-pointer hover:animate-spin hover:duration-200"
+              src={user?.profileImage}
+            />
           </DropdownTrigger>
           <DropdownMenu aria-label="User Actions">
             <DropdownItem onClick={() => handleNavigation("/dashboard")}>
