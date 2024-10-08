@@ -33,7 +33,7 @@ const columns = [
 const Favourite = () => {
   const { user: currentUser } = useAppSelector((state) => state.auth);
   const { data: getMe, isLoading: favouriteDataLoading } = useGetMeQuery(
-    currentUser?.userId && { _id: currentUser.userId },
+    currentUser?.userId && { _id: currentUser.userId }
   );
   const favouriteData = (getMe?.data?.favourite as IPost[]) || [];
   const [favouritePost] = useFavouritePostMutation();
@@ -72,13 +72,13 @@ const Favourite = () => {
           return null;
       }
     },
-    [],
+    []
   );
 
   if (favouriteData.length === 0) {
     return (
       <div className="text-3xl font-semibold text-center">
-        No Payment History Available
+        No Favourite Available
       </div>
     );
   }

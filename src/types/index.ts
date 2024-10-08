@@ -161,51 +161,51 @@ export interface SocialMediaLinks {
 }
 
 export interface IMyPost {
-  _id: string
-  title: string
-  bio: string
-  content: string
-  author: Author
-  comments: string[]
-  tags: string[]
-  category: string
-  upvotes: number
-  downvotes: number
-  commentsCount: number
-  isPremium: boolean
-  thumbnail: string
-  createdAt: string
-  updatedAt: string
-  __v: number
+  _id: string;
+  title: string;
+  bio: string;
+  content: string;
+  author: Author;
+  comments: string[];
+  tags: string[];
+  category: string;
+  upvotes: number;
+  downvotes: number;
+  commentsCount: number;
+  isPremium: boolean;
+  thumbnail: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }
 
 export interface Author {
-  socialMediaLinks: SocialMediaLinks
-  _id: string
-  email: string
-  password: string
-  role: string
-  username: string
-  profilePicture: string
-  followers: any[]
-  following: string[]
-  favourite: any[]
-  isVerified: boolean
-  gender: string
-  status: string
-  createdAt: string
-  updatedAt: string
-  __v: number
-  bio: string
-  gardeningExperienceLevel: string
-  interests: string
-  location: string
-  phone: string
+  socialMediaLinks: SocialMediaLinks;
+  _id: string;
+  email: string;
+  password: string;
+  role: string;
+  username: string;
+  profilePicture: string;
+  followers: any[];
+  following: string[];
+  favourite: any[];
+  isVerified: boolean;
+  gender: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  bio: string;
+  gardeningExperienceLevel: string;
+  interests: string;
+  location: string;
+  phone: string;
 }
 
 export interface SocialMediaLinks {
-  facebook: string
-  twitter: string
-  instagram: string
-  linkedin: string
+  facebook: string;
+  twitter: string;
+  instagram: string;
+  linkedin: string;
 }
