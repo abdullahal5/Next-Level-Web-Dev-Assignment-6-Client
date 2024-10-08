@@ -91,7 +91,7 @@ export interface IPost {
   downvotes: number;
   commentsCount: number;
   isPremium: boolean;
-  images: string[];
+  thumbnail: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -111,4 +111,101 @@ export interface editUserData {
   instagram?: string;
   linkedin?: string;
   profilePicture?: string;
+}
+
+export interface IPayment {
+  _id: string;
+  user: User;
+  amount: number;
+  paymentMethod: string;
+  status: string;
+  transactionId: string;
+  planTitle: string;
+  planPrice: number;
+  expiryDate: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+export interface User {
+  socialMediaLinks: SocialMediaLinks;
+  _id: string;
+  email: string;
+  password: string;
+  role: string;
+  username: string;
+  profilePicture: string;
+  followers: string[];
+  following: any[];
+  favourite: any[];
+  isVerified: boolean;
+  gender: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  bio: string;
+  dateOfBirth: string;
+  gardeningExperienceLevel: string;
+  interests: string;
+  location: string;
+  phone: string;
+}
+
+export interface SocialMediaLinks {
+  facebook: string;
+  twitter: string;
+  instagram: string;
+  linkedin: string;
+}
+
+export interface IMyPost {
+  _id: string
+  title: string
+  bio: string
+  content: string
+  author: Author
+  comments: string[]
+  tags: string[]
+  category: string
+  upvotes: number
+  downvotes: number
+  commentsCount: number
+  isPremium: boolean
+  thumbnail: string
+  createdAt: string
+  updatedAt: string
+  __v: number
+}
+
+export interface Author {
+  socialMediaLinks: SocialMediaLinks
+  _id: string
+  email: string
+  password: string
+  role: string
+  username: string
+  profilePicture: string
+  followers: any[]
+  following: string[]
+  favourite: any[]
+  isVerified: boolean
+  gender: string
+  status: string
+  createdAt: string
+  updatedAt: string
+  __v: number
+  bio: string
+  gardeningExperienceLevel: string
+  interests: string
+  location: string
+  phone: string
+}
+
+export interface SocialMediaLinks {
+  facebook: string
+  twitter: string
+  instagram: string
+  linkedin: string
 }

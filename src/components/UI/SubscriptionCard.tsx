@@ -1,7 +1,8 @@
 "use client";
+import { FaCheckCircle } from "react-icons/fa";
+
 import { useCreatePaymentMutation } from "@/src/redux/features/payment/paymentApi";
 import { useAppSelector } from "@/src/redux/hook";
-import { FaCheckCircle } from "react-icons/fa";
 
 interface SubscriptionCardProps {
   title: string;
@@ -31,7 +32,9 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 
     const res = await createPayment(subscriptionData);
 
-    window.location.href = res.data.data.payment_url;
+    if (res) {
+      window.location.href = res.data.data.payment_url;
+    }
   };
 
   return (
@@ -52,7 +55,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         </span>
       )}
       <p className="text-center mb-4 text-gray-600 dark:text-gray-300">
-        Duration: {expiry} {/* Display expiry here */}
+        Duration: {expiry}
       </p>
       <ul className="list-disc list-inside mb-4 flex-grow flex flex-col justify-center space-y-2">
         {features.map((feature, index) => (
@@ -66,8 +69,8 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         ))}
       </ul>
       <button
-        onClick={handlePayment}
         className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300"
+        onClick={handlePayment}
       >
         Subscribe
       </button>

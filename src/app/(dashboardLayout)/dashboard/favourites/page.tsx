@@ -75,43 +75,53 @@ const Favourite = () => {
     [],
   );
 
+  if (favouriteData.length === 0) {
+    return (
+      <div className="text-3xl font-semibold text-center">
+        No Payment History Available
+      </div>
+    );
+  }
+
   return (
     <div className="overflow-x-auto">
       {favouriteDataLoading ? (
         <p className="text-center">Loading...</p>
       ) : (
-        <Table aria-label="Favourite posts table" className="min-w-full">
-          <TableHeader columns={columns}>
-            {(column) => (
-              <TableColumn
-                key={column.uid}
-                align={"center"}
-                className="whitespace-nowrap"
-              >
-                {column.name}
-              </TableColumn>
-            )}
-          </TableHeader>
-          <TableBody
-            isLoading={favouriteDataLoading}
-            items={favouriteData}
-            loadingContent={
-              <TableRow>
-                <TableCell align="center" colSpan={columns.length}>
-                  Loading...
-                </TableCell>
-              </TableRow>
-            }
-          >
-            {(item) => (
-              <TableRow key={item._id}>
-                {(columnKey) => (
-                  <TableCell>{renderCell(item, columnKey)}</TableCell>
-                )}
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+        <>
+          <Table aria-label="Favourite posts table" className="min-w-full">
+            <TableHeader columns={columns}>
+              {(column) => (
+                <TableColumn
+                  key={column.uid}
+                  align={"center"}
+                  className="whitespace-nowrap"
+                >
+                  {column.name}
+                </TableColumn>
+              )}
+            </TableHeader>
+            <TableBody
+              isLoading={favouriteDataLoading}
+              items={favouriteData}
+              loadingContent={
+                <TableRow>
+                  <TableCell align="center" colSpan={columns.length}>
+                    Loading...
+                  </TableCell>
+                </TableRow>
+              }
+            >
+              {(item) => (
+                <TableRow key={item._id}>
+                  {(columnKey) => (
+                    <TableCell>{renderCell(item, columnKey)}</TableCell>
+                  )}
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </>
       )}
     </div>
   );

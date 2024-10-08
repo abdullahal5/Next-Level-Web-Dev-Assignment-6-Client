@@ -2,6 +2,16 @@ import { baseApi } from "../../api/baseApi";
 
 const postApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    createPost: builder.mutation({
+      query: (args) => {
+        return {
+          url: `/post/create`,
+          method: "POST",
+          body: args,
+        };
+      },
+      invalidatesTags: ["post"],
+    }),
     getAllPost: builder.query({
       query: () => ({
         url: "/post/get-all",
@@ -36,6 +46,13 @@ const postApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ["post"],
     }),
+    getMyPost: builder.query({
+      query: () => ({
+        url: "/post/get-my",
+        method: "GET",
+      }),
+      providesTags: ["post"],
+    }),
   }),
 });
 
@@ -44,4 +61,6 @@ export const {
   useGetSinlePostQuery,
   useUpvoteDownvoteMutation,
   useDeletePostMutation,
+  useCreatePostMutation,
+  useGetMyPostQuery,
 } = postApi;

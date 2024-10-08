@@ -5,7 +5,9 @@ import { useFormContext } from "react-hook-form";
 
 import { IInput } from "@/src/types";
 
-interface IProps extends IInput {}
+interface IProps extends IInput {
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
 
 export default function GHInput({
   variant = "bordered",
@@ -15,6 +17,7 @@ export default function GHInput({
   label,
   name,
   defaultValue,
+  onChange,
 }: IProps) {
   const {
     register,
@@ -31,6 +34,7 @@ export default function GHInput({
       size={size}
       type={type}
       variant={variant}
+      onChange={onChange}
     />
   );
 }

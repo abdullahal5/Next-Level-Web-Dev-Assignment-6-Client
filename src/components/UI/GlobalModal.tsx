@@ -31,7 +31,12 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
 }) => {
   return (
     <>
-      <Modal isOpen={isOpen} size={size} onClose={onClose}>
+      <Modal
+        isOpen={isOpen}
+        scrollBehavior="outside"
+        size={size}
+        onClose={onClose}
+      >
         <ModalContent>
           <>
             <ModalHeader className="flex flex-col gap-1">{title}</ModalHeader>

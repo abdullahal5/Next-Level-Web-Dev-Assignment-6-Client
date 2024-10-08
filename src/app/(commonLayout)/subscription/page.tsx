@@ -43,11 +43,11 @@ const SubscriptionPage = () => {
         {subscriptionPlans.map((plan, index) => (
           <SubscriptionCard
             key={index}
+            expiry={plan.expiry}
             features={plan.features}
             isMiddle={index === 1}
             price={plan.price}
             title={plan.title}
-            expiry={plan.expiry}
           />
         ))}
       </div>

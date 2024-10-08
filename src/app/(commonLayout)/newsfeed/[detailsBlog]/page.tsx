@@ -3,7 +3,7 @@
 "use client";
 import { Spinner } from "@nextui-org/spinner";
 import Image from "next/image";
-import { FaComment, FaRegHeart } from "react-icons/fa";
+import { FaCheckCircle, FaComment, FaRegHeart } from "react-icons/fa";
 import { SlDislike, SlLike } from "react-icons/sl";
 import { FaRegShareSquare } from "react-icons/fa";
 import { useState } from "react";
@@ -13,6 +13,9 @@ import { IoIosSend } from "react-icons/io";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Divider } from "@nextui-org/divider";
 import { toast } from "sonner";
+import { Chip } from "@nextui-org/chip";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import { formatDate } from "@/src/utils/dateFormat";
 import { IPost } from "@/src/types";
@@ -31,8 +34,6 @@ import TTextarea from "@/src/components/form/GHTextArea";
 import { commentValidationSchema } from "@/src/schema/comment.schema";
 import { useCreateCommentMutation } from "@/src/redux/features/comment/commentApi";
 import CommentCard from "@/src/components/UI/newsfeed/CommentCard";
-import { Chip } from "@nextui-org/chip";
-import { useRouter } from "next/navigation";
 
 const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
   const [copied, setCopied] = useState(false);
@@ -60,7 +61,7 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
     useFavouritePostMutation();
 
   const postFavId = getMe?.data?.favourite.map(
-    (item: { _id: any }) => item._id
+    (item: { _id: any }) => item._id,
   );
 
   const postUrl = `localhost:3000/newsfeed/${data?._id}`;
@@ -115,7 +116,7 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
     await upAndDownVote(data);
   };
 
-  const isPremiumAndNotVerified = data?.isPremium && !data?.author?.isVerified;
+  const isPremiumAndNotVerified = data?.isPremium && !getMe?.data?.isVerified;
 
   return (
     <>
@@ -137,14 +138,14 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
                 </p>
                 <div className="flex items-center gap-3 justify-center">
                   <Button
-                    onClick={() => router.push("/subscription")}
                     className="bg-blue-600 text-white hover:bg-blue-700 transition duration-300 rounded-md px-6 py-3 font-semibold shadow-md "
+                    onClick={() => router.push("/subscription")}
                   >
                     Upgrade Now
                   </Button>
                   <Button
-                    onClick={() => router.back()}
                     className="bg-gray-600 text-white hover:bg-gray-700 transition duration-300 rounded-md px-6 py-3 font-semibold"
+                    onClick={() => router.back()}
                   >
                     Go Back
                   </Button>
@@ -165,19 +166,37 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
               ""
             )}
             <div className="flex gap-3 border-b border-t py-3 border-gray-600">
-              <div>
+              <div className="relative flex justify-center items-center">
                 <Image
                   alt="Profile Image"
-                  className="rounded-full border p-1"
+                  className={`rounded-full border p-1 transition-transform duration-300 ease-in-out hover:scale-105 shadow-lg ${
+                    data?.author?.isVerified
+                      ? "border-blue-600 border-2"
+                      : "border-gray-300"
+                  }`}
                   height={50}
                   src={data?.author?.profilePicture as string}
                   width={50}
                 />
+                {data?.author?.isVerified && (
+                  <div className="absolute -bottom-1 right-0 mb-1 ml-1 p-1 rounded-full shadow-md">
+                    <FaCheckCircle
+                      className="text-blue-500"
+                      fontSize={"1rem"}
+                    />
+                  </div>
+                )}
               </div>
               <div className="flex items-center justify-between w-full">
                 <div>
                   <div className="flex items-center gap-3">
-                    <p className="text-lg">{data?.author?.username}</p>
+                    <p className="text-lg hover:underline">
+                      <Link
+                        href={`/dashboard/profile?userId=${data?.author?._id}`}
+                      >
+                        {data.author.username}
+                      </Link>
+                    </p>
                     {user?.userId !== data.author._id && (
                       <span
                         className="bg-green-700 text-white px-3 text-sm rounded-full py-1 cursor-pointer hover:bg-green-800 transition duration-300"
@@ -190,7 +209,7 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
                             size="sm"
                           />
                         ) : data?.author?.followers?.includes(
-                            user?.userId as string
+                            user?.userId as string,
                           ) ? (
                           "Unfollow"
                         ) : (
@@ -257,11 +276,14 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
                 alt="Cover Image"
                 className="w-full h-[400px] bg-cover bg-center bg-no-repeat rounded-md object-cover"
                 height={200}
-                src={data.images[1]}
+                src={data?.thumbnail}
                 width={500}
               />
             </div>
-            <p className="py-3">{data.content}</p>
+            <div
+              dangerouslySetInnerHTML={{ __html: data?.content }}
+              className="mt-6 prose dark:prose-invert max-w-full break-words"
+            />
           </div>{" "}
           {data?.comments?.length > 0 ? (
             <div className="max-w-3xl mx-auto">

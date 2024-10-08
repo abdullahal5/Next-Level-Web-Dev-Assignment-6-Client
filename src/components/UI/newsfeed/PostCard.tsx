@@ -5,7 +5,7 @@
 import Image from "next/image";
 import { SlLike, SlDislike } from "react-icons/sl";
 import { BsCalendar2Date } from "react-icons/bs";
-import { FaComment } from "react-icons/fa";
+import { FaCheckCircle, FaComment } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
 import Link from "next/link";
 import { Chip } from "@nextui-org/chip";
@@ -35,7 +35,7 @@ const PostCard = ({ post }: IPostCard) => {
   const { data: getMe } = useGetMeQuery({ _id: user?.userId });
 
   const postFavId = getMe?.data?.favourite.map(
-    (item: { _id: any }) => item._id
+    (item: { _id: any }) => item._id,
   );
 
   const followAndUnfollowUser = async (followOwnerId: string) => {
@@ -71,18 +71,34 @@ const PostCard = ({ post }: IPostCard) => {
         <div className="w-full md:w-2/3">
           <div className="flex items-center justify-between pb-3">
             <div className="flex gap-2 items-center">
-              <Image
-                alt="Author Image"
-                className="object-cover rounded-full border"
-                height={30}
-                src={
-                  post?.author?.profilePicture as
-                    | string
-                    | "https://i.ibb.co/vkVW6s0/download.png"
-                }
-                width={30}
-              />
-              <p className="font-semibold">{post.author.username}</p>
+              <div className="relative flex justify-center items-center">
+                <Link href={`/dashboard/profile?userId=${post?.author?._id}`}>
+                  <Image
+                    alt="Profile Image"
+                    className={`rounded-full border p-1 transition-transform duration-300 ease-in-out hover:scale-105 shadow-lg ${
+                      post?.author?.isVerified
+                        ? "border-blue-600 border-2"
+                        : "border-gray-300"
+                    }`}
+                    height={30}
+                    src={post?.author?.profilePicture as string}
+                    width={30}
+                  />
+                </Link>
+                {post?.author?.isVerified && (
+                  <div className="absolute -bottom-1 right-0 mb-1 ml-1 p-1 rounded-full shadow-md">
+                    <FaCheckCircle
+                      className="text-blue-500"
+                      fontSize={"0.6rem"}
+                    />
+                  </div>
+                )}
+              </div>
+              <p className="font-semibold hover:underline">
+                <Link href={`/dashboard/profile?userId=${post?.author?._id}`}>
+                  {post.author.username}
+                </Link>
+              </p>
               {user?.userId !== post.author?._id && (
                 <span
                   className="bg-green-700 text-white px-3 text-sm rounded-full py-1 cursor-pointer hover:bg-green-800 transition duration-300"
@@ -95,7 +111,7 @@ const PostCard = ({ post }: IPostCard) => {
                       size="sm"
                     />
                   ) : post.author?.followers?.includes(
-                      user?.userId as string
+                      user?.userId as string,
                     ) ? (
                     "Unfollow"
                   ) : (
@@ -163,7 +179,7 @@ const PostCard = ({ post }: IPostCard) => {
             alt="Blog Image"
             className="rounded-md w-full h-auto object-cover shadow-md transition-transform duration-300 hover:scale-105"
             height={400}
-            src={post.images[0]}
+            src={post?.thumbnail}
             width={400}
           />
         </div>

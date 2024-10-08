@@ -80,7 +80,7 @@ export default function Component() {
                     <div className="relative flex flex-col items-center">
                       <Avatar
                         alt={getMeData?.username}
-                        className="w-32 h-32 text-large mb-4 border-4 border-blue-500"
+                        className={`w-32 h-32 text-large mb-4 ${getMeData?.isVerified ? "border-4 border-blue-500" : ""}`}
                         src={getMeData?.profilePicture}
                       />
                       {getMeData?.isVerified && (

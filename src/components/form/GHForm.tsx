@@ -30,12 +30,16 @@ export default function GHForm({
   }
 
   const methods = useForm(formConfig);
+  const { reset } = methods;
 
-  const submitHandler = methods.handleSubmit;
+  const submitHandler = methods.handleSubmit((data) => {
+    onSubmit(data);
+    reset();
+  });
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={submitHandler(onSubmit)}>{children}</form>
+      <form onSubmit={submitHandler}>{children}</form>
     </FormProvider>
   );
 }

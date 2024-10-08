@@ -21,8 +21,21 @@ const commentApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ["post"],
     }),
+    commentUpdate: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/comment/update/${data?.commentId}`,
+          method: "PUT",
+          body: { commentText: data?.data?.commentText },
+        };
+      },
+      invalidatesTags: ["post"],
+    }),
   }),
 });
 
-export const { useCreateCommentMutation, useDeleteCommentMutation } =
-  commentApi;
+export const {
+  useCreateCommentMutation,
+  useDeleteCommentMutation,
+  useCommentUpdateMutation,
+} = commentApi;

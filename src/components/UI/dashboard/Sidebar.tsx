@@ -15,6 +15,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { RiEditLine } from "react-icons/ri";
 import { IoKeyOutline } from "react-icons/io5";
 import { Button } from "@nextui-org/button";
+import { MdOutlineDashboardCustomize } from "react-icons/md";
 
 import GlobalLoading from "../GlobalLoading";
 
@@ -22,6 +23,11 @@ import { useAppDispatch, useAppSelector } from "@/src/redux/hook";
 import { logout } from "@/src/redux/features/auth/authSlice";
 
 const userRoutes = [
+  {
+    item: "Dashboard",
+    icon: MdOutlineDashboardCustomize,
+    link: "/dashboard",
+  },
   {
     item: "Profile",
     icon: CgProfile,
@@ -36,6 +42,11 @@ const userRoutes = [
     item: "Favourites",
     icon: FaRegHeart,
     link: "/dashboard/favourites",
+  },
+  {
+    item: "Payment History",
+    icon: FaDollarSign,
+    link: "/dashboard/my-payment",
   },
   {
     item: "Edit Profile",
@@ -55,6 +66,11 @@ const userRoutes = [
 ];
 
 const adminRoutes = [
+  {
+    item: "Dashboard",
+    icon: MdOutlineDashboardCustomize,
+    link: "/dashboard",
+  },
   {
     item: "Profile",
     icon: CgProfile,

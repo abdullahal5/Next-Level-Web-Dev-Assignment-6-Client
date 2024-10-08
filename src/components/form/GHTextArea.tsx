@@ -3,9 +3,18 @@ import { useFormContext } from "react-hook-form";
 
 import { IInput } from "@/src/types";
 
-interface IProps extends IInput {}
+interface IProps extends IInput {
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
 
-const TTextarea = ({ label, name, variant = "bordered" }: IProps) => {
+const TTextarea = ({
+  label,
+  name,
+  value,
+  onChange,
+  variant = "bordered",
+}: IProps) => {
   const {
     register,
     formState: { errors },
@@ -18,7 +27,9 @@ const TTextarea = ({ label, name, variant = "bordered" }: IProps) => {
       errorMessage={(errors[name]?.message as string) ?? ""}
       isInvalid={!!errors[name]}
       maxRows={6}
+      value={value}
       variant={variant}
+      onChange={onChange}
     />
   );
 };

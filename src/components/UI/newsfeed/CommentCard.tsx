@@ -1,6 +1,9 @@
 "use client";
 import { Avatar } from "@nextui-org/avatar";
 import { Button } from "@nextui-org/button";
+import { useDisclosure } from "@nextui-org/modal";
+
+import EditCommentModal from "../../EditCommentmodal";
 
 import { useAppSelector } from "@/src/redux/hook";
 import { IComment } from "@/src/types";
@@ -13,11 +16,16 @@ interface IProps {
 
 const CommentCard = ({ comment }: IProps) => {
   const { user } = useAppSelector((state) => state.auth);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [commentDelete, { isLoading: commentdelteLoading }] =
     useDeleteCommentMutation();
 
   const handleDelete = (id: string) => {
     commentDelete(id);
+  };
+
+  const handleUpdateComment = () => {
+    onOpen();
   };
 
   return (
@@ -41,7 +49,11 @@ const CommentCard = ({ comment }: IProps) => {
         {comment.userId._id.includes(user?.userId as string) ? (
           <div className="flex items-center gap-3 pt-2">
             <>
-              <Button size="sm" variant="bordered">
+              <Button
+                size="sm"
+                variant="bordered"
+                onClick={handleUpdateComment}
+              >
                 Edit
               </Button>
               <Button
@@ -59,6 +71,13 @@ const CommentCard = ({ comment }: IProps) => {
           ""
         )}
       </div>
+
+      <EditCommentModal
+        comment={comment?.commentText}
+        commentId={comment?._id}
+        isOpen={isOpen}
+        onClose={onClose}
+      />
     </div>
   );
 };
