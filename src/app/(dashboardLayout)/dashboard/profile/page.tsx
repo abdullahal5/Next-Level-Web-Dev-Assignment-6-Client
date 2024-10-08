@@ -18,23 +18,31 @@ import { Divider } from "@nextui-org/divider";
 import { Progress } from "@nextui-org/progress";
 import Link from "next/link";
 import { Spinner } from "@nextui-org/spinner";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
 import { useAppSelector } from "@/src/redux/hook";
 import { useGetMeQuery } from "@/src/redux/features/auth/authApi";
-import { IAuthor } from "@/src/types";
+import { IAuthor, IMyPost } from "@/src/types";
 import { formatDate } from "@/src/utils/dateFormat";
+import { useGetMyPostQuery } from "@/src/redux/features/post/postApi";
 
 export default function Component() {
   const { user } = useAppSelector((state) => state.auth);
   const searchParams = useSearchParams();
   const queryId = searchParams.get("userId");
 
+  const router = useRouter();
+
   const { data: getMe, isFetching } = useGetMeQuery({
     _id: queryId ? queryId : user?.userId,
   });
 
   const getMeData = getMe?.data as IAuthor;
+
+  const { data: getMyPost } = useGetMyPostQuery(undefined);
+
+  const myPost = (getMyPost?.data as IMyPost[]) || [];
 
   const fields = [
     getMeData?.username,
@@ -57,7 +65,17 @@ export default function Component() {
   }).length;
   const profileCompletion = Math.round((filledFields / fields.length) * 100);
 
-  const handleVerify = () => {};
+  const handleVerify = () => {
+    const allUpvoteCountsGreaterThanFive = myPost?.every(
+      (post) => (post?.upvotes || 0) >= 5,
+    );
+
+    if (getMyPost && allUpvoteCountsGreaterThanFive === false) {
+      toast.error("You need atleast 5 likes in your post");
+    } else {
+      router.push("/subscription");
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -120,7 +138,7 @@ export default function Component() {
                       <Divider orientation="vertical" />
                       <div>
                         <span className="font-semibold text-success">
-                          {getMeData?.post || "34"}
+                          {myPost?.length || "0"}
                         </span>
                         <p className="text-small text-default-500">Posts</p>
                       </div>
@@ -138,22 +156,20 @@ export default function Component() {
                             </Button>
                           </div>
                         </Link>
-                        <Link className="w-full" href={"/subscription"}>
-                          {getMeData?.isVerified === false ? (
-                            <div className="w-full mt-4">
-                              <Button
-                                className="w-full"
-                                color="secondary"
-                                variant="solid"
-                                onClick={handleVerify}
-                              >
-                                Verify
-                              </Button>
-                            </div>
-                          ) : (
-                            ""
-                          )}
-                        </Link>
+                        {getMeData?.isVerified === false ? (
+                          <div className="w-full mt-4">
+                            <Button
+                              className="w-full"
+                              color="secondary"
+                              variant="solid"
+                              onClick={handleVerify}
+                            >
+                              Verify
+                            </Button>
+                          </div>
+                        ) : (
+                          ""
+                        )}
                       </>
                     )}
                   </div>

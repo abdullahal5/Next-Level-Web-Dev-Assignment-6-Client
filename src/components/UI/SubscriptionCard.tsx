@@ -1,8 +1,10 @@
+/* eslint-disable padding-line-between-statements */
 "use client";
 import { FaCheckCircle } from "react-icons/fa";
-
+import { useRouter } from "next/navigation";
 import { useCreatePaymentMutation } from "@/src/redux/features/payment/paymentApi";
 import { useAppSelector } from "@/src/redux/hook";
+import { useEffect, useState } from "react";
 
 interface SubscriptionCardProps {
   title: string;
@@ -21,6 +23,14 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 }) => {
   const [createPayment] = useCreatePaymentMutation();
   const { user } = useAppSelector((state) => state.auth);
+  const router = useRouter();
+  const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/login");
+    }
+  }, [user, router]);
 
   const handlePayment = async () => {
     const subscriptionData = {
@@ -31,11 +41,16 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     };
 
     const res = await createPayment(subscriptionData);
-
-    if (res) {
-      window.location.href = res.data.data.payment_url;
+    if (res && res.data.data.payment_url) {
+      setPaymentUrl(res.data.data.payment_url);
     }
   };
+
+  useEffect(() => {
+    if (paymentUrl) {
+      window.location.href = paymentUrl;
+    }
+  }, [paymentUrl]);
 
   return (
     <div

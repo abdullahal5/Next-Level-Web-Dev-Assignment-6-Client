@@ -127,7 +127,7 @@ const MyContent = () => {
           return null;
       }
     },
-    []
+    [],
   );
 
   if (!myPost || myPost?.length === 0) {
@@ -163,7 +163,7 @@ const MyContent = () => {
           title="Update Content"
           onClose={onUpdateClose}
         >
-          <UpdateContent onClose={onUpdateClose} post={editingPost} />
+          <UpdateContent post={editingPost} onClose={onUpdateClose} />
         </GlobalModal>
       )}
 

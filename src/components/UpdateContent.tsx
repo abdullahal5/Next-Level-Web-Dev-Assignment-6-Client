@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button } from "@nextui-org/button";
 import { Checkbox } from "@nextui-org/checkbox";
 import dynamic from "next/dynamic";
+// eslint-disable-next-line import/order
 import Image from "next/image";
 
 const ReactQuill = dynamic(() => import("react-quill"), {
@@ -52,7 +53,7 @@ const modules = {
           if (file) {
             if (file.size > 10485760) {
               return toast.warning(
-                "File size exceeds 10 MB limit. Please select a smaller file."
+                "File size exceeds 10 MB limit. Please select a smaller file.",
               );
             }
             const url = await uploadImageToCloudinary(file);
@@ -78,13 +79,13 @@ import { toast } from "sonner";
 
 import { IMyPost } from "../types";
 import uploadImageToCloudinary from "../utils/uploadImageToCloudinary";
+import { useUpdatePostMutation } from "../redux/features/post/postApi";
 
 import GHForm from "./form/GHForm";
 import GHInput from "./form/GHInput";
 import TTextarea from "./form/GHTextArea";
 import GHTagInput from "./form/GHTagInput";
 import GHSelect from "./form/GHSelect";
-import { useUpdatePostMutation } from "../redux/features/post/postApi";
 
 const UpdateContent = ({
   post,
@@ -120,6 +121,7 @@ const UpdateContent = ({
     };
 
     const res = await update(updatedData);
+
     if (res?.data?.success) {
       toast.success("post updated successfully");
       onClose();
@@ -127,14 +129,14 @@ const UpdateContent = ({
   };
 
   const handleThumbnailUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
 
     if (file) {
       if (file.size > 10485760) {
         return toast.warning(
-          "File size exceeds 10 MB limit. Please select a smaller file."
+          "File size exceeds 10 MB limit. Please select a smaller file.",
         );
       }
 
@@ -207,9 +209,9 @@ const UpdateContent = ({
 
         <ReactQuill
           className="mt-3"
+          modules={modules}
           theme="snow"
           value={value}
-          modules={modules}
           onChange={setValue}
         />
 

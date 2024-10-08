@@ -1,8 +1,21 @@
+"use client";
 import React from "react";
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import { FaUsers, FaFileAlt, FaDollarSign } from "react-icons/fa";
 
+import { useDashbaordDataQuery } from "@/src/redux/features/dashboard/dashboardApi";
+
+export interface IDashboard {
+  totalPosts: number;
+  totalUsers: number;
+  totalRevenue: number;
+}
+
 const DashboardStatsPage = () => {
+  const { data: dashboard } = useDashbaordDataQuery(undefined);
+
+  const mydata = dashboard?.data as IDashboard;
+
   return (
     <div className="p-6 space-y-8">
       <h1 className="text-4xl font-bold text-center text-gray-200">
@@ -15,7 +28,7 @@ const DashboardStatsPage = () => {
             <h2 className="text-xl font-semibold">Total Posts</h2>
           </CardHeader>
           <CardBody>
-            <p className="text-3xl font-semibold">1,234</p>
+            <p className="text-3xl font-semibold">{mydata?.totalPosts}</p>
             <p className="text-sm text-gray-400 mt-1">Posts created so far</p>
           </CardBody>
         </Card>
@@ -26,7 +39,7 @@ const DashboardStatsPage = () => {
             <h2 className="text-xl font-semibold">Total Users</h2>
           </CardHeader>
           <CardBody>
-            <p className="text-3xl font-semibold">567</p>
+            <p className="text-3xl font-semibold">{mydata?.totalUsers}</p>
             <p className="text-sm text-gray-400 mt-1">Active users</p>
           </CardBody>
         </Card>
@@ -37,7 +50,7 @@ const DashboardStatsPage = () => {
             <h2 className="text-xl font-semibold">Total Revenue</h2>
           </CardHeader>
           <CardBody>
-            <p className="text-3xl font-semibold">$12,345</p>
+            <p className="text-3xl font-semibold">${mydata?.totalRevenue}</p>
             <p className="text-sm text-gray-400 mt-1">Revenue generated</p>
           </CardBody>
         </Card>

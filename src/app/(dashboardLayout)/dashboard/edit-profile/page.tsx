@@ -53,18 +53,18 @@ export default function EditProfile() {
   const onSubmit = async (data: FieldValues) => {
     const userData: editUserData = {
       _id: user?.userId,
-      username: data.username,
-      bio: data.bio,
-      gardeningExperienceLevel: data.gardeningExperienceLevel,
-      location: data.location,
-      phone: data.phone,
-      dateOfBirth: data.dateOfBirth ? dateToISO(data.dateOfBirth) : undefined,
-      interest: data.interests,
-      gender: data.gender,
-      facebook: data.facebook,
-      twitter: data.twitter,
-      instagram: data.instagram,
-      linkedin: data.linkedin,
+      username: data?.username,
+      bio: data?.bio,
+      gardeningExperienceLevel: data?.gardeningExperienceLevel,
+      location: data?.location,
+      phone: data?.phone,
+      dateOfBirth: data?.dateOfBirth ? dateToISO(data.dateOfBirth) : undefined,
+      interest: data?.interests,
+      gender: data?.gender,
+      facebook: data?.facebook,
+      twitter: data?.twitter,
+      instagram: data?.instagram,
+      linkedin: data?.linkedin,
     };
 
     if (profileImage) {

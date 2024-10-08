@@ -11,7 +11,7 @@ import { RootState } from "../store";
 import { logout, setUser } from "../features/auth/authSlice";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:5000/api/v1",
+  baseUrl: "https://next-level-web-dev-assignment-6-server.vercel.app/api/v1",
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const state = getState() as RootState;
@@ -33,10 +33,13 @@ const BaseQueryWithRefreshToken: BaseQueryFn<
   let result = await baseQuery(args, api, extraOptions);
 
   if (result?.error?.status === 401) {
-    const res = await fetch("http://localhost:5000/api/v1/auth/refresh-token", {
-      method: "POST",
-      credentials: "include",
-    });
+    const res = await fetch(
+      "https://next-level-web-dev-assignment-6-server.vercel.app/api/v1/auth/refresh-token",
+      {
+        method: "POST",
+        credentials: "include",
+      },
+    );
     const data = await res.json();
 
     if (data?.data?.accessToken) {
