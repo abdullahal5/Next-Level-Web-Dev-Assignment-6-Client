@@ -38,7 +38,7 @@ const Banner = () => {
           <h1 className="text-5xl md:text-7xl font-bold tracking-wide text-shadow-lg">
             Welcome to
             <span className="block text-green-400 mt-2 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
-              Gardening Paradise
+              Gardening HUB
             </span>
           </h1>
         </motion.div>

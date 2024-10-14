@@ -1,22 +1,26 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
 "use client";
-import { Spinner } from "@nextui-org/spinner";
-import Image from "next/image";
-import { FaCheckCircle, FaComment, FaRegHeart } from "react-icons/fa";
-import { SlDislike, SlLike } from "react-icons/sl";
-import { FaRegShareSquare } from "react-icons/fa";
+
 import { useState } from "react";
-import { FieldValues } from "react-hook-form";
-import { Button } from "@nextui-org/button";
+import Image from "next/image";
+import { FaComment, FaRegHeart, FaRegShareSquare } from "react-icons/fa";
+import { SlDislike, SlLike } from "react-icons/sl";
 import { IoIosSend } from "react-icons/io";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Divider } from "@nextui-org/divider";
-import { toast } from "sonner";
-import { Chip } from "@nextui-org/chip";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { FieldValues } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
+import { Button } from "@nextui-org/button";
+import { Chip } from "@nextui-org/chip";
+import { Avatar } from "@nextui-org/avatar";
+import { Divider } from "@nextui-org/divider";
+import { Tooltip } from "@nextui-org/tooltip";
+import { Spinner } from "@nextui-org/spinner";
 
+import GHForm from "@/src/components/form/GHForm";
+import TTextarea from "@/src/components/form/GHTextArea";
+import { commentValidationSchema } from "@/src/schema/comment.schema";
 import { formatDate } from "@/src/utils/dateFormat";
 import { IPost } from "@/src/types";
 import {
@@ -29,15 +33,15 @@ import {
   useGetMeQuery,
 } from "@/src/redux/features/auth/authApi";
 import { useAppSelector } from "@/src/redux/hook";
-import GHForm from "@/src/components/form/GHForm";
-import TTextarea from "@/src/components/form/GHTextArea";
-import { commentValidationSchema } from "@/src/schema/comment.schema";
 import { useCreateCommentMutation } from "@/src/redux/features/comment/commentApi";
 import CommentCard from "@/src/components/UI/newsfeed/CommentCard";
+import AuthenticationModal from "@/src/components/AuthenticationModal";
 
 const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const { user } = useAppSelector((state) => state.auth);
+  const router = useRouter();
 
   const { data: getSinglePostData, isLoading } = useGetSinlePostQuery({
     _id: params.detailsBlog,
@@ -45,264 +49,287 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
 
   const [followAndUnfollow, { isLoading: followLoading }] =
     useFollowAndUnfollowUserMutation();
-
   const [postComment, { isLoading: commentLoading }] =
     useCreateCommentMutation();
-
   const [upAndDownVote] = useUpvoteDownvoteMutation();
-
-  const router = useRouter();
-
-  const data = getSinglePostData?.data as IPost;
-
   const { data: getMe } = useGetMeQuery({ _id: user?.userId });
-
   const [favouritePost, { isLoading: favouriteLoading }] =
     useFavouritePostMutation();
 
-  const postFavId = getMe?.data?.favourite.map(
-    (item: { _id: any }) => item._id,
-  );
-
+  const data = getSinglePostData?.data as IPost | undefined;
+  const postFavId =
+    getMe?.data?.favourite?.map((item: { _id: any }) => item._id) || [];
   const postUrl = `localhost:3000/newsfeed/${data?._id}`;
+  const isPremiumAndNotVerified = data?.isPremium && !getMe?.data?.isVerified;
+  const userId = user?.userId as string | undefined;
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(postUrl).then(() => {
-      setCopied(true);
-      setTimeout(() => {
-        setCopied(false);
-      }, 2000);
-    });
-  };
-
-  const followAndUnfollowUser = async (followOwnerId: string) => {
-    if (followOwnerId) {
-      await followAndUnfollow(followOwnerId);
+    if (postUrl) {
+      navigator.clipboard.writeText(postUrl).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      });
     }
   };
 
-  const onSubmit = async (data: FieldValues) => {
-    const commentData = {
-      ...data,
-      postId: params?.detailsBlog,
-      userId: user?.userId,
-    };
+  const followAndUnfollowUser = async (followOwnerId: string) => {
+    if (!user) {
+      setIsModalOpen(true);
 
-    const res = await postComment(commentData);
+      return;
+    }
+    if (followOwnerId) await followAndUnfollow(followOwnerId);
+  };
 
-    if (res.data.success) {
-      toast.success("Comment added successfully");
+  const onSubmit = async (formData: FieldValues) => {
+    if (!user) {
+      setIsModalOpen(true);
+
+      return;
+    }
+    if (params?.detailsBlog && user?.userId) {
+      const commentData = {
+        ...formData,
+        postId: params.detailsBlog,
+        userId: user.userId,
+      };
+      const res = await postComment(commentData);
+
+      if ("data" in res && res.data.success) {
+        toast.success("Comment added successfully");
+      }
     }
   };
 
   const handleFavouritePost = async (id: string) => {
-    await favouritePost(id);
+    if (!user) {
+      setIsModalOpen(true);
+
+      return;
+    }
+    if (id) await favouritePost(id);
   };
 
-  const upvotes = async (id: string) => {
-    const data = {
-      _id: id,
-      type: "increment",
-    };
+  const handleVote = async (id: string, type: "upvote" | "downvote") => {
+    if (!user) {
+      setIsModalOpen(true);
 
-    await upAndDownVote(data);
-  };
-  const downvotes = async (id: string) => {
-    const data = {
-      _id: id,
-      type: "decrement",
-    };
-
-    await upAndDownVote(data);
+      return;
+    }
+    if (id) await upAndDownVote({ _id: id, type });
   };
 
-  const isPremiumAndNotVerified = data?.isPremium && !getMe?.data?.isVerified;
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
+
+  if (!data) {
+    return <div className="text-center mt-8">Post not found</div>;
+  }
+
+  if (isPremiumAndNotVerified) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md">
+        <Card className="max-w-sm">
+          <CardBody className="text-center">
+            <h2 className="text-3xl font-bold mb-4">Premium Content</h2>
+            <p className="text-lg text-gray-400 mb-6">
+              This content is exclusive to premium users. Please upgrade to
+              access it.
+            </p>
+            <div className="flex justify-center gap-3">
+              <Button
+                color="primary"
+                onPress={() => router.push("/subscription")}
+              >
+                Upgrade Now
+              </Button>
+              <Button
+                color="secondary"
+                variant="flat"
+                onPress={() => router.back()}
+              >
+                Go Back
+              </Button>
+            </div>
+          </CardBody>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <>
-      {isLoading ? (
-        <div className="flex justify-center items-center h-screen">
-          <Spinner size="lg" />
-        </div>
-      ) : (
-        <>
-          {isPremiumAndNotVerified && (
-            <div className="bg-black/80 h-screen fixed inset-0 z-[999] backdrop-blur-md flex items-center justify-center">
-              <div className="bg-gray-900 border border-gray-700 rounded-lg shadow-2xl p-8 max-w-sm text-center">
-                <h2 className="text-4xl font-extrabold text-white mb-4">
-                  Premium Content
-                </h2>
-                <p className="text-lg text-gray-400 mb-6">
-                  This content is exclusive to premium users. Please upgrade to
-                  access it.
-                </p>
-                <div className="flex items-center gap-3 justify-center">
-                  <Button
-                    className="bg-blue-600 text-white hover:bg-blue-700 transition duration-300 rounded-md px-6 py-3 font-semibold shadow-md "
-                    onClick={() => router.push("/subscription")}
-                  >
-                    Upgrade Now
-                  </Button>
-                  <Button
-                    className="bg-gray-600 text-white hover:bg-gray-700 transition duration-300 rounded-md px-6 py-3 font-semibold"
-                    onClick={() => router.back()}
-                  >
-                    Go Back
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
-          <div className="max-w-3xl mx-auto rounded-lg p-3 my-5 border border-gray-800">
-            <h1 className="text-5xl font-semibold">{data?.title}</h1>
-            <p className="text-lg text-gray-400 border-gray-600 py-7">
-              {data?.bio}
-            </p>
-            {data?.isPremium ? (
-              <Chip className="mb-5" color="primary" variant="flat">
+      <div className="max-w-4xl mx-auto my-10 px-4">
+        <Card className="w-full">
+          <CardHeader className="flex-col items-start">
+            <h1 className="text-3xl font-bold mb-2">{data.title}</h1>
+            <p className="text-lg text-gray-400 mb-4">{data.bio}</p>
+            {data.isPremium && (
+              <Chip className="mb-4" color="warning" variant="flat">
                 Premium
               </Chip>
-            ) : (
-              ""
             )}
-            <div className="flex gap-3 border-b border-t py-3 border-gray-600">
-              <div className="relative flex justify-center items-center">
-                <Image
-                  alt="Profile Image"
-                  className={`rounded-full border p-1 transition-transform duration-300 ease-in-out hover:scale-105 shadow-lg ${
-                    data?.author?.isVerified
-                      ? "border-blue-600 border-2"
-                      : "border-gray-300"
-                  }`}
-                  height={50}
-                  src={data?.author?.profilePicture as string}
-                  width={50}
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center gap-3">
+                <Avatar
+                  isBordered
+                  color={data.author?.isVerified ? "primary" : "default"}
+                  size="md"
+                  src={data.author?.profilePicture}
                 />
-                {data?.author?.isVerified && (
-                  <div className="absolute -bottom-1 right-0 mb-1 ml-1 p-1 rounded-full shadow-md">
-                    <FaCheckCircle
-                      className="text-blue-500"
-                      fontSize={"1rem"}
-                    />
-                  </div>
-                )}
-              </div>
-              <div className="flex items-center justify-between w-full">
                 <div>
-                  <div className="flex items-center gap-3">
-                    <p className="text-lg hover:underline">
-                      <Link
-                        href={`/dashboard/profile?userId=${data?.author?._id}`}
-                      >
-                        {data.author.username}
-                      </Link>
-                    </p>
-                    {user?.userId !== data.author._id && (
-                      <span
-                        className="bg-green-700 text-white px-3 text-sm rounded-full py-1 cursor-pointer hover:bg-green-800 transition duration-300"
-                        onClick={() => followAndUnfollowUser(data?.author?._id)}
-                      >
-                        {followLoading ? (
-                          <Spinner
-                            className={`${followLoading ? "cursor-not-allowed" : "cursor-pointer"}`}
-                            color="white"
-                            size="sm"
-                          />
-                        ) : data?.author?.followers?.includes(
-                            user?.userId as string,
-                          ) ? (
-                          "Unfollow"
-                        ) : (
-                          "+ Follow"
-                        )}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-gray-600">
-                    {data?.author?.followers?.length} followers .{" "}
-                    {formatDate(data?.createdAt)}
+                  <Link
+                    className="font-semibold hover:underline"
+                    href={`/dashboard/profile?userId=${data.author?._id}`}
+                  >
+                    {data.author?.username}
+                  </Link>
+                  <p className="text-sm text-gray-400">
+                    {data.author?.followers?.length} followers ·{" "}
+                    {formatDate(data.createdAt)}
                   </p>
                 </div>
-                <div className="flex items-center justify-center gap-5">
-                  <div className="flex items-center gap-1">
-                    {favouriteLoading ? (
-                      <Spinner size="sm" />
-                    ) : (
-                      <FaRegHeart
-                        className={`cursor-pointer  ${postFavId?.includes(data?._id) ? "text-red-700" : "text-gray-600"}`}
-                        fontSize={"1.5rem"}
-                        onClick={() => handleFavouritePost(data._id)}
-                      />
-                    )}
-                  </div>
-                  <div
-                    className="flex items-center gap-1"
-                    onClick={() => upvotes(data._id)}
-                  >
-                    <SlLike className="cursor-pointer" fontSize={"1.2rem"} />
-                    <span className="text-xs">{data.upvotes}</span>
-                  </div>
-                  <div
-                    className="flex items-center gap-1"
-                    onClick={() => downvotes(data._id)}
-                  >
-                    <SlDislike className="cursor-pointer" fontSize={"1.2rem"} />
-                    <span className="text-xs">{data.downvotes}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <FaComment
-                      className="cursor-pointer text-gray-500"
-                      fontSize={"1.2rem"}
-                    />
-                    <span className="text-xs">{data.commentsCount}</span>
-                  </div>
-                  <div className="flex relative items-center gap-1">
-                    <FaRegShareSquare
-                      className="cursor-pointer text-gray-500"
-                      fontSize={"1.2rem"}
-                      onClick={copyToClipboard}
-                    />
-                    {copied && (
-                      <span className="text-xs top-8 absolute bg-gray-800 rounded-md px-3 py-2">
-                        Copied!
-                      </span>
-                    )}
-                  </div>
-                </div>
               </div>
+              {user?.userId !== data.author?._id && (
+                <Button
+                  color={
+                    data.author?.followers?.includes(user?.userId as string)
+                      ? "default"
+                      : "primary"
+                  }
+                  isLoading={followLoading}
+                  variant="flat"
+                  onPress={() =>
+                    data.author?._id && followAndUnfollowUser(data.author._id)
+                  }
+                >
+                  {data.author?.followers?.includes(user?.userId as string)
+                    ? "Unfollow"
+                    : "Follow"}
+                </Button>
+              )}
             </div>
-            <div className="pt-10">
-              <Image
-                alt="Cover Image"
-                className="w-full h-[400px] bg-cover bg-center bg-no-repeat rounded-md object-cover"
-                height={200}
-                src={data?.thumbnail}
-                width={500}
-              />
-            </div>
-            <div
-              dangerouslySetInnerHTML={{ __html: data?.content }}
-              className="mt-6 prose dark:prose-invert max-w-full break-words"
+          </CardHeader>
+          <Divider />
+          <CardBody>
+            <Image
+              alt="Cover Image"
+              className="w-full h-[400px] object-cover rounded-lg mb-6"
+              height={500}
+              src={data.thumbnail || "/placeholder.png"}
+              width={1000}
             />
-          </div>{" "}
-          {data?.comments?.length > 0 ? (
-            <div className="max-w-3xl mx-auto">
-              <h1 className="text-2xl font-semibold">Comments</h1>
-              <div className="py-7 my-5 px-3 overflow-y-auto max-h-[500px] ">
-                {data?.comments?.map((comment, index) => (
-                  <div key={index} className="w-full mb-6 last:mb-0">
-                    <CommentCard comment={comment} />
-                    {index < data.comments.length - 1 && (
-                      <Divider className="my-6" />
-                    )}
-                  </div>
-                ))}
+            <div
+              dangerouslySetInnerHTML={{ __html: data.content }}
+              className="prose dark:prose-invert max-w-full"
+            />
+          </CardBody>
+          <Divider />
+          <CardFooter>
+            <div className="flex justify-between items-center w-full">
+              <div className="flex gap-4">
+                <Tooltip content="Like">
+                  <Button
+                    variant="light"
+                    onPress={() => handleVote(data._id, "upvote")}
+                  >
+                    <div className="flex items-center gap-2">
+                      <SlLike
+                        className={
+                          data.upvotes?.includes(userId!) ? "text-primary" : ""
+                        }
+                      />
+                      {data.upvotes?.length || 0}
+                    </div>
+                  </Button>
+                </Tooltip>
+
+                <Tooltip content="Dislike">
+                  <Button
+                    variant="light"
+                    onPress={() => handleVote(data._id, "downvote")}
+                  >
+                    <div className="flex items-center gap-2">
+                      <SlDislike
+                        className={
+                          data.downvotes?.includes(userId!) ? "text-danger" : ""
+                        }
+                      />
+                      {data.downvotes?.length || 0}
+                    </div>
+                  </Button>
+                </Tooltip>
+
+                <Tooltip content="Comments">
+                  <Button variant="light">
+                    <div className="flex items-center gap-2">
+                      <FaComment />
+                      {data.commentsCount || 0}
+                    </div>
+                  </Button>
+                </Tooltip>
+              </div>
+
+              <div className="flex gap-4">
+                <Tooltip
+                  content={
+                    postFavId.includes(data._id)
+                      ? "Remove from favorites"
+                      : "Add to favorites"
+                  }
+                >
+                  <Button
+                    isLoading={favouriteLoading}
+                    variant="light"
+                    onPress={() => handleFavouritePost(data._id)}
+                  >
+                    <div className="flex items-center gap-2">
+                      <FaRegHeart
+                        className={
+                          postFavId.includes(data._id) ? "text-danger" : ""
+                        }
+                      />
+                    </div>
+                  </Button>
+                </Tooltip>
+
+                <Tooltip content={copied ? "Copied!" : "Share"}>
+                  <Button variant="light" onPress={copyToClipboard}>
+                    <div className="flex items-center gap-2">
+                      <FaRegShareSquare />
+                    </div>
+                  </Button>
+                </Tooltip>
               </div>
             </div>
-          ) : (
-            ""
-          )}
-          <div className="max-w-3xl mx-auto">
+          </CardFooter>
+        </Card>
+
+        {data.comments && data.comments.length > 0 && (
+          <Card className="mt-8">
+            <CardHeader>
+              <h2 className="text-2xl font-semibold">Comments</h2>
+            </CardHeader>
+            <CardBody className="max-h-[500px] overflow-y-auto">
+              {data.comments.map((comment, index) => (
+                <div key={index} className="mb-6 last:mb-0">
+                  <CommentCard comment={comment} />
+                  {index < data.comments.length - 1 && (
+                    <Divider className="my-4" />
+                  )}
+                </div>
+              ))}
+            </CardBody>
+          </Card>
+        )}
+
+        <Card className="mt-8">
+          <CardBody>
             <GHForm
               resolver={zodResolver(commentValidationSchema)}
               onSubmit={onSubmit}
@@ -313,19 +340,19 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
                 type="text"
               />
               <Button
-                className="my-3 rounded-md text-white font-semibold"
+                className="mt-4"
                 color="primary"
                 isLoading={commentLoading}
-                size="md"
+                startContent={<IoIosSend />}
                 type="submit"
               >
-                <IoIosSend fontSize={"1.4rem"} />
                 Post Comment
               </Button>
             </GHForm>
-          </div>
-        </>
-      )}
+          </CardBody>
+        </Card>
+      </div>
+      <AuthenticationModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
     </>
   );
 };

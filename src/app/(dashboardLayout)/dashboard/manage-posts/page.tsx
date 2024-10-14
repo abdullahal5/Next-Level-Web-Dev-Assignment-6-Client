@@ -65,10 +65,10 @@ export default function ManageAllPostPage() {
         return <p>{post.category}</p>;
 
       case "upvotes":
-        return <p>{post.upvotes}</p>;
+        return <p>{post.upvotes?.length}</p>;
 
       case "downvotes":
-        return <p>{post.downvotes}</p>;
+        return <p>{post.downvotes?.length}</p>;
 
       case "commentsCount":
         return <p>{post.commentsCount}</p>;
@@ -109,31 +109,33 @@ export default function ManageAllPostPage() {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <Table
-        aria-label="Post table with data from API"
-        className="min-w-[640px] md:w-full"
-      >
-        <TableHeader columns={columns}>
-          {(column) => (
-            <TableColumn
-              key={column.uid}
-              align={column.uid === "actions" ? "center" : "start"}
-            >
-              {column.name}
-            </TableColumn>
-          )}
-        </TableHeader>
-        <TableBody items={posts}>
-          {(item) => (
-            <TableRow key={item._id}>
-              {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
-              )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </div>
+    <>
+      <div className="overflow-x-auto">
+        <Table
+          aria-label="Post table with data from API"
+          className="min-w-[640px] md:w-full"
+        >
+          <TableHeader columns={columns}>
+            {(column) => (
+              <TableColumn
+                key={column.uid}
+                align={column.uid === "actions" ? "center" : "start"}
+              >
+                {column.name}
+              </TableColumn>
+            )}
+          </TableHeader>
+          <TableBody items={posts}>
+            {(item) => (
+              <TableRow key={item._id}>
+                {(columnKey) => (
+                  <TableCell>{renderCell(item, columnKey)}</TableCell>
+                )}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </>
   );
 }

@@ -5,22 +5,22 @@
 import { useState, useRef, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
+import GHForm from "../../form/GHForm";
+import GHInput from "../../form/GHInput";
+
 const tabs = [
-  "Coding",
-  "JavaScript",
-  "Podcasts",
-  "Databases",
-  "Web Development",
-  "Unboxing",
-  "History",
-  "Programming",
-  "Gadgets",
-  "Algorithms",
-  "Comedy",
-  "Gaming",
-  "Share Market",
-  "Smartphones",
-  "Data Structure",
+  "Flowers",
+  "Vegetables",
+  "Herbs",
+  "Shrubs",
+  "Trees",
+  "Succulents & Cacti",
+  "Indoor Plants",
+  "Garden Tools",
+  "Fertilizers",
+  "Pots & Planters",
+  "Seeds",
+  "Watering Systems",
 ];
 
 export default function Component() {
@@ -75,32 +75,40 @@ export default function Component() {
     handleScroll();
   };
 
+  const onsubmit = () => {};
+
   return (
-    <div className="w-full rounded-md mb-10">
-      <div className="relative w-full rounded-2xl p-8 overflow-hidden dark:border-none border dark:bg-slate-800 shadow-lg">
-        {showLeftArrow && (
-          <div className="absolute px-3 -left-3 top-0 h-full flex items-center z-50 pl-4">
-            <FaChevronLeft
-              className="w-10 h-10 text-white cursor-pointer bg-gray-800 rounded-full p-2 shadow-md transition duration-300 hover:bg-gray-700"
-              onClick={() => scroll("left")}
-            />
-          </div>
-        )}
-        <div
-          ref={tabsBoxRef}
-          className={`flex gap-3 overflow-x-auto scroll-smooth ${
-            isDragging ? "cursor-grabbing" : "cursor-grab"
-          } scrollbar-hide`}
-          role="list"
-          onMouseDown={startDragging}
-          onMouseLeave={stopDragging}
-          onMouseMove={drag}
-          onMouseUp={stopDragging}
-        >
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              className={`shrink-0 py-3 px-5 rounded-full text-sm md:text-base whitespace-nowrap transition-colors select-none
+    <>
+      <div className="lg:w-1/2 md:w-1/2 mx-auto my-5">
+        <GHForm onSubmit={onsubmit}>
+          <GHInput label="Search" name="search" type="search" />
+        </GHForm>
+      </div>
+      <div className="w-full rounded-md mb-10">
+        <div className="relative w-full rounded-2xl p-8 overflow-hidden dark:border-none border dark:bg-slate-800 shadow-lg">
+          {showLeftArrow && (
+            <div className="absolute px-3 -left-3 top-0 h-full flex items-center z-50 pl-4">
+              <FaChevronLeft
+                className="w-10 h-10 text-white cursor-pointer bg-gray-800 rounded-full p-2 shadow-md transition duration-300 hover:bg-gray-700"
+                onClick={() => scroll("left")}
+              />
+            </div>
+          )}
+          <div
+            ref={tabsBoxRef}
+            className={`flex gap-3 overflow-x-auto scroll-smooth ${
+              isDragging ? "cursor-grabbing" : "cursor-grab"
+            } scrollbar-hide`}
+            role="list"
+            onMouseDown={startDragging}
+            onMouseLeave={stopDragging}
+            onMouseMove={drag}
+            onMouseUp={stopDragging}
+          >
+            {tabs.map((tab) => (
+              <button
+                key={tab}
+                className={`shrink-0 py-3 px-5 rounded-full text-sm md:text-base whitespace-nowrap transition-colors select-none
                 ${
                   activeTab === tab
                     ? "bg-black text-white shadow-lg"
@@ -108,21 +116,22 @@ export default function Component() {
                 } 
                 transform transition-all hover:duration-300 duration-300 ease-in-out 
                 hover:scale-105`}
-              onClick={() => !isDragging && setActiveTab(tab)}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-        {showRightArrow && (
-          <div className="absolute right-2 top-0 h-full flex items-center z-10 pl-4">
-            <FaChevronRight
-              className="w-10 h-10 text-white cursor-pointer bg-gray-800 rounded-full p-2 shadow-md transition duration-300 hover:bg-gray-700"
-              onClick={() => scroll("right")}
-            />
+                onClick={() => !isDragging && setActiveTab(tab)}
+              >
+                {tab}
+              </button>
+            ))}
           </div>
-        )}
+          {showRightArrow && (
+            <div className="absolute right-2 top-0 h-full flex items-center z-10 pl-4">
+              <FaChevronRight
+                className="w-10 h-10 text-white cursor-pointer bg-gray-800 rounded-full p-2 shadow-md transition duration-300 hover:bg-gray-700"
+                onClick={() => scroll("right")}
+              />
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

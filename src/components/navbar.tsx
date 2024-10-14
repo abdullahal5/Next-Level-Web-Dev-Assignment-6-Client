@@ -11,12 +11,12 @@ import { Link } from "@nextui-org/link";
 import { link as linkStyles } from "@nextui-org/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
+import Image from "next/image";
 
 import NavbarDropdown from "./UI/NavbarDropdown";
 
 import { siteConfig } from "@/src/config/site";
 import { ThemeSwitch } from "@/src/components/theme-switch";
-import { Logo } from "@/src/components/icons";
 
 export const Navbar = () => {
   return (
@@ -24,8 +24,13 @@ export const Navbar = () => {
       <NavbarContent className="basis-1/5 sm:basis-full flex justify-start items-center">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
-            <Logo />
-            <p className="font-bold text-inherit">ACME</p>
+            <Image
+              alt="Web Image"
+              height={50}
+              src={"https://i.ibb.co.com/gMLfjkP/images-removebg-preview-2.png"}
+              width={50}
+            />
+            <p className="font-bold text-inherit">Gardening HUB!!!</p>
           </NextLink>
         </NavbarBrand>
       </NavbarContent>

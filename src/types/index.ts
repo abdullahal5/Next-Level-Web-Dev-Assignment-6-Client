@@ -87,8 +87,8 @@ export interface IPost {
   comments: IComment[];
   tags: string[];
   category: string;
-  upvotes: number;
-  downvotes: number;
+  upvotes: string[];
+  downvotes: string[];
   commentsCount: number;
   isPremium: boolean;
   thumbnail: string;

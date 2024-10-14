@@ -130,14 +130,6 @@ const MyContent = () => {
     [],
   );
 
-  if (!myPost || myPost?.length === 0) {
-    return (
-      <div className="text-3xl font-semibold text-center">
-        No Posts Available
-      </div>
-    );
-  }
-
   return (
     <>
       <Button variant="solid" onPress={onCreateOpen}>
@@ -167,40 +159,46 @@ const MyContent = () => {
         </GlobalModal>
       )}
 
-      <div className="pt-5">
-        <Table aria-label="Favourite posts table" className="min-w-full">
-          <TableHeader columns={columns}>
-            {(column) => (
-              <TableColumn
-                key={column.uid}
-                align={"center"}
-                className="whitespace-nowrap"
-              >
-                {column.name}
-              </TableColumn>
-            )}
-          </TableHeader>
-          <TableBody
-            isLoading={getMyPostLoading}
-            items={myPost}
-            loadingContent={
-              <TableRow>
-                <TableCell align="center" colSpan={columns.length}>
-                  Loading...
-                </TableCell>
-              </TableRow>
-            }
-          >
-            {(item) => (
-              <TableRow key={item._id}>
-                {(columnKey) => (
-                  <TableCell>{renderCell(item, columnKey)}</TableCell>
-                )}
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+      {!myPost || myPost.length === 0 ? (
+        <div className="text-3xl font-semibold text-center">
+          No Posts Available
+        </div>
+      ) : (
+        <div className="pt-5">
+          <Table aria-label="Favourite posts table" className="min-w-full">
+            <TableHeader columns={columns}>
+              {(column) => (
+                <TableColumn
+                  key={column.uid}
+                  align={"center"}
+                  className="whitespace-nowrap"
+                >
+                  {column.name}
+                </TableColumn>
+              )}
+            </TableHeader>
+            <TableBody
+              isLoading={getMyPostLoading}
+              items={myPost}
+              loadingContent={
+                <TableRow>
+                  <TableCell align="center" colSpan={columns.length}>
+                    Loading...
+                  </TableCell>
+                </TableRow>
+              }
+            >
+              {(item) => (
+                <TableRow key={item._id}>
+                  {(columnKey) => (
+                    <TableCell>{renderCell(item, columnKey)}</TableCell>
+                  )}
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      )}
     </>
   );
 };

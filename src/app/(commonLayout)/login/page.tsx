@@ -7,6 +7,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Divider } from "@nextui-org/divider";
+import { motion, AnimatePresence } from "framer-motion";
+import { Card, CardBody, CardHeader } from "@nextui-org/card";
+import { FaArrowLeft, FaLeaf } from "react-icons/fa";
 
 import loginValidationSchema, {
   forgetPasswordValidationSchema,
@@ -67,75 +71,122 @@ const LoginPage = () => {
   return (
     <>
       {isLoading && <GlobalLoading />}
-      {isForgetPasswordForm ? (
-        <div className="flex h-[calc(100vh-300px)] w-full flex-col items-center justify-center">
-          <div className="w-[35%] mx-auto">
-            <h3 className="my-2 text-2xl font-bold">Forget Password</h3>
-            <p className="mb-4">forgot password? Reset it.</p>
-            <GHForm
-              resolver={zodResolver(forgetPasswordValidationSchema)}
-              onSubmit={onSubmitForgetPassword}
-            >
-              <GHInput label="Email" name="email" type="email" />
-              <button
-                className="text-xs inline-block pb-6 hover:underline cursor-pointer text-blue-600 font-semibold"
-                type="button"
-                onClick={() => setIsForgetPasswordForm(false)}
+      <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-green-100 to-green-200 dark:from-black dark:to-black p-4">
+        <motion.div
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-md"
+          initial={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Card className="bg-background/80 backdrop-blur-lg shadow-2xl border border-foreground/10">
+            <CardHeader className="flex flex-col items-center pb-0 pt-8">
+              <motion.div
+                animate={{ scale: 1 }}
+                initial={{ scale: 0 }}
+                transition={{ type: "spring", stiffness: 260, damping: 20 }}
               >
-                Login
-              </button>
-              <Button
-                className="my-3 w-full rounded-md bg-default-900 font-semibold text-default"
-                size="lg"
-                type="submit"
-              >
-                Send OTP
-              </Button>
-            </GHForm>
-          </div>
-        </div>
-      ) : (
-        <div className="flex h-[calc(100vh-200px)] w-full flex-col items-center justify-center">
-          <h3 className="my-2 text-2xl font-bold">
-            Login with Gardening HUB!!!
-          </h3>
-          <p className="mb-4">Welcome Back! Let&lsquo;s Get Started</p>
-          <div className="w-[35%]">
-            <GHForm
-              resolver={zodResolver(loginValidationSchema)}
-              onSubmit={onSubmit}
-            >
-              <div className="py-3">
-                <GHInput label="Email" name="email" type="email" />
-              </div>
-              <div className="py-3">
-                <GHInput label="Password" name="password" type="password" />
-              </div>
-              <button
-                className="text-xs inline-block pb-6 hover:underline cursor-pointer text-blue-600 font-semibold"
-                type="button"
-                onClick={() => setIsForgetPasswordForm(true)}
-              >
-                Forget Password?
-              </button>
-
-              <Button
-                className="my-3 w-full rounded-md bg-default-900 font-semibold text-default"
-                size="lg"
-                type="submit"
-              >
-                Login
-              </Button>
-            </GHForm>
-            <div className="text-center">
-              Don&lsquo;t have account ?{" "}
-              <Link className="text-blue-500" href={"/register"}>
-                Register
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
+                <FaLeaf className="text-green-400 text-5xl mb-4" />
+              </motion.div>
+              <h3 className="text-3xl font-bold text-foreground mb-2">
+                {isForgetPasswordForm ? "Reset Password" : "Welcome Back!"}
+              </h3>
+              <p className="text-foreground-500 text-sm">
+                {isForgetPasswordForm
+                  ? "Enter your email to reset your password"
+                  : "Login to your Gardening HUB account"}
+              </p>
+            </CardHeader>
+            <CardBody className="px-6 py-8">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={isForgetPasswordForm ? "forget" : "login"}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  initial={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {isForgetPasswordForm ? (
+                    <GHForm
+                      resolver={zodResolver(forgetPasswordValidationSchema)}
+                      onSubmit={onSubmitForgetPassword}
+                    >
+                      <div className="space-y-4">
+                        <GHInput
+                          label="Email"
+                          name="email"
+                          type="email"
+                          variant="bordered"
+                        />
+                        <Button
+                          className="w-full bg-gradient-to-r from-green-400 to-green-600 text-primary-foreground font-semibold"
+                          size="lg"
+                          type="submit"
+                        >
+                          Send OTP
+                        </Button>
+                        <Button
+                          className="w-full mt-4 text-foreground"
+                          startContent={<FaArrowLeft />}
+                          variant="light"
+                          onPress={() => setIsForgetPasswordForm(false)}
+                        >
+                          Back to Login
+                        </Button>
+                      </div>
+                    </GHForm>
+                  ) : (
+                    <GHForm
+                      resolver={zodResolver(loginValidationSchema)}
+                      onSubmit={onSubmit}
+                    >
+                      <div className="space-y-4">
+                        <GHInput
+                          label="Email"
+                          name="email"
+                          type="email"
+                          variant="bordered"
+                        />
+                        <div>
+                          <GHInput
+                            label="Password"
+                            name="password"
+                            type="password"
+                            variant="bordered"
+                          />
+                          <Button
+                            className="text-xs text-green-400 p-0 hover:none font-semibold"
+                            variant="light"
+                            onPress={() => setIsForgetPasswordForm(true)}
+                          >
+                            Forgot Password?
+                          </Button>
+                        </div>
+                        <Button
+                          className="w-full bg-gradient-to-r from-green-400 to-green-600 text-green-foreground font-semibold"
+                          size="lg"
+                          type="submit"
+                        >
+                          Login
+                        </Button>
+                      </div>
+                      <Divider className="my-6" />
+                      <div className="text-center text-sm">
+                        Don&apos;t have an account?{" "}
+                        <Link
+                          className="text-green-400 font-semibold hover:underline"
+                          href="/register"
+                        >
+                          Register
+                        </Link>
+                      </div>
+                    </GHForm>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </CardBody>
+          </Card>
+        </motion.div>
+      </div>
     </>
   );
 };
