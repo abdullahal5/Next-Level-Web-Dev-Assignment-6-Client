@@ -25,9 +25,11 @@ import { useUpvoteDownvoteMutation } from "@/src/redux/features/post/postApi";
 
 interface IPostCard {
   post: IPost;
+  searchTerm: string;
+  category: string;
 }
 
-const PostCard = ({ post }: IPostCard) => {
+const PostCard = ({ post, searchTerm, category }: IPostCard) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [followAndUnfollow, { isLoading: followLoading }] =
     useFollowAndUnfollowUserMutation();
@@ -38,7 +40,7 @@ const PostCard = ({ post }: IPostCard) => {
   const { data: getMe } = useGetMeQuery({ _id: user?.userId });
 
   const postFavId = getMe?.data?.favourite.map(
-    (item: { _id: any }) => item._id,
+    (item: { _id: any }) => item._id
   );
 
   const followAndUnfollowUser = async (followOwnerId: string) => {
@@ -80,6 +82,9 @@ const PostCard = ({ post }: IPostCard) => {
   };
 
   const userId = user?.userId as string | undefined;
+
+  // console.log(category)
+  // console.log(searchTerm)
 
   return (
     <>

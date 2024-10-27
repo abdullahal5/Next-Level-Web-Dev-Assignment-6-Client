@@ -110,6 +110,11 @@ export default function ManageAllPostPage() {
 
   return (
     <>
+      <h1
+        className={`text-4xl font-bold text-center dark:text-gray-200 text-gray-800 pb-5`}
+      >
+        All Posts
+      </h1>
       <div className="overflow-x-auto">
         <Table
           aria-label="Post table with data from API"

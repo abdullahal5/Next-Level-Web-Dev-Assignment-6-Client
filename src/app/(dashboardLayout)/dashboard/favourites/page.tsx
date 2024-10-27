@@ -33,7 +33,7 @@ const columns = [
 const Favourite = () => {
   const { user: currentUser } = useAppSelector((state) => state.auth);
   const { data: getMe, isLoading: favouriteDataLoading } = useGetMeQuery(
-    currentUser?.userId && { _id: currentUser.userId },
+    currentUser?.userId && { _id: currentUser.userId }
   );
   const favouriteData = (getMe?.data?.favourite as IPost[]) || [];
   const [favouritePost] = useFavouritePostMutation();
@@ -52,9 +52,9 @@ const Favourite = () => {
         case "author":
           return <p>{post.author._id}</p>;
         case "upvotes":
-          return <p>{post.upvotes}</p>;
+          return <p>{post.upvotes.length}</p>;
         case "downvotes":
-          return <p>{post.downvotes}</p>;
+          return <p>{post.downvotes.length}</p>;
         case "actions":
           return (
             <div className="relative flex items-center gap-2">
@@ -72,7 +72,7 @@ const Favourite = () => {
           return null;
       }
     },
-    [],
+    []
   );
 
   if (favouriteData.length === 0) {
@@ -89,6 +89,11 @@ const Favourite = () => {
         <p className="text-center">Loading...</p>
       ) : (
         <>
+          <h1
+            className={`text-4xl font-bold text-center dark:text-gray-200 text-gray-800 pb-5`}
+          >
+            Favourite Posts
+          </h1>
           <Table aria-label="Favourite posts table" className="min-w-full">
             <TableHeader columns={columns}>
               {(column) => (

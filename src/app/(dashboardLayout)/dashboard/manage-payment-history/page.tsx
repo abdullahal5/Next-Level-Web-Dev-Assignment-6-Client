@@ -12,14 +12,11 @@ import {
 } from "@nextui-org/table";
 import { Chip } from "@nextui-org/chip";
 import { Avatar } from "@nextui-org/avatar";
-import { IoAddCircleOutline } from "react-icons/io5";
 import { useDisclosure } from "@nextui-org/modal";
-import { Button } from "@nextui-org/button";
 
 import { useGetAllPaymentQuery } from "@/src/redux/features/payment/paymentApi";
 import { IPayment } from "@/src/types";
 import { formatDate } from "@/src/utils/dateFormat";
-import GlobalModal from "@/src/components/UI/GlobalModal";
 
 const columns = [
   { name: "NAME", uid: "name" },
@@ -89,21 +86,11 @@ const PaymentHistory = () => {
 
   return (
     <>
-      <Button variant="solid" onPress={onOpen}>
-        <IoAddCircleOutline fontSize={"1.5rem"} />
-        Show This Month
-      </Button>
-
-      <GlobalModal
-        action="Create Post"
-        isOpen={isOpen}
-        size="xl"
-        title="New Content"
-        onClose={onClose}
+      <h1
+        className={`text-4xl font-bold text-center dark:text-gray-200 text-gray-800 pb-5`}
       >
-        hello
-      </GlobalModal>
-
+        All Payment
+      </h1>
       <div className="overflow-x-auto">
         <Table
           aria-label="All Users Payment History"

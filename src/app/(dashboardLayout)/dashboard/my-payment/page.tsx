@@ -80,27 +80,34 @@ const PaymentHistory = () => {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <Table
-        aria-label="User and Payment History"
-        className="min-w-[640px] md:w-full"
+    <>
+      <h1
+        className={`text-4xl font-bold text-center dark:text-gray-200 text-gray-800 pb-5`}
       >
-        <TableHeader columns={columns}>
-          {(column) => (
-            <TableColumn key={column.uid}>{column.name}</TableColumn>
-          )}
-        </TableHeader>
-        <TableBody items={payments}>
-          {(payment) => (
-            <TableRow key={payment._id}>
-              {(columnKey) => (
-                <TableCell>{renderCell(payment, columnKey)}</TableCell>
-              )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </div>
+        My Payments
+      </h1>
+      <div className="overflow-x-auto">
+        <Table
+          aria-label="User and Payment History"
+          className="min-w-[640px] md:w-full"
+        >
+          <TableHeader columns={columns}>
+            {(column) => (
+              <TableColumn key={column.uid}>{column.name}</TableColumn>
+            )}
+          </TableHeader>
+          <TableBody items={payments}>
+            {(payment) => (
+              <TableRow key={payment._id}>
+                {(columnKey) => (
+                  <TableCell>{renderCell(payment, columnKey)}</TableCell>
+                )}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </>
   );
 };
 

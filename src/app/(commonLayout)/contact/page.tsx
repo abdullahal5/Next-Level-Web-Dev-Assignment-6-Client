@@ -8,6 +8,7 @@ import {
   FaPaperPlane,
 } from "react-icons/fa";
 import Image from "next/image";
+import { Card } from "@nextui-org/card";
 
 const ContactPage = () => {
   const [name, setName] = useState("");
@@ -132,6 +133,20 @@ const ContactPage = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div>
+        <Card className="w-full h-64 mb-10 md:h-96">
+          <iframe
+            allowFullScreen
+            height="100%"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3654.2528524254367!2d90.51630467507009!3d23.666913991976784!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b153290c6253%3A0x2558a8d5888f6a72!2sS.O%20Rd%2C%20Narayanganj!5e0!3m2!1sen!2sbd!4v1728971696723!5m2!1sen!2sbd"
+            style={{ border: 0 }}
+            title="Travex Location"
+            width="100%"
+          />
+        </Card>
       </div>
     </div>
   );

@@ -67,7 +67,7 @@ export default function Component() {
 
   const handleVerify = () => {
     const allUpvoteCountsGreaterThanFive = myPost?.every(
-      (post) => (post?.upvotes || 0) >= 5,
+      (post) => (post?.upvotes || 0) >= 5
     );
 
     if (getMyPost && allUpvoteCountsGreaterThanFive === false) {
@@ -83,6 +83,11 @@ export default function Component() {
         <Spinner size="lg" />
       ) : (
         <>
+          <h1
+            className={`text-4xl font-bold text-center dark:text-gray-200 text-gray-800 pb-5`}
+          >
+            Profile
+          </h1>
           <Progress
             className="pb-5"
             color="success"

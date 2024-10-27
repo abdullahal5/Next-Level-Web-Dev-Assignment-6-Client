@@ -90,9 +90,9 @@ const MyContent = () => {
         case "category":
           return <Chip>{post.category}</Chip>;
         case "upvotes":
-          return <p>{post.upvotes}</p>;
+          return <p>{post.upvotes.length}</p>;
         case "downvotes":
-          return <p>{post.downvotes}</p>;
+          return <p>{post.downvotes.length}</p>;
         case "comments":
           return <p>{post.commentsCount}</p>;
         case "premium":
@@ -127,11 +127,16 @@ const MyContent = () => {
           return null;
       }
     },
-    [],
+    []
   );
 
   return (
     <>
+      <h1
+        className={`text-4xl font-bold text-center dark:text-gray-200 text-gray-800 pb-5`}
+      >
+        My Content
+      </h1>
       <Button variant="solid" onPress={onCreateOpen}>
         <IoAddCircleOutline fontSize={"1.5rem"} />
         Add New Content

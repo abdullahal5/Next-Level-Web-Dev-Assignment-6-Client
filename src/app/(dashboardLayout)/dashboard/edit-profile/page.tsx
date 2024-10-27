@@ -25,6 +25,7 @@ import uploadImageToCloudinary from "@/src/utils/uploadImageToCloudinary";
 import { dateToISO } from "@/src/utils/dateToISO";
 import { setUser } from "@/src/redux/features/auth/authSlice";
 import { verifyToken } from "@/src/utils/jwt";
+import { Input } from "@nextui-org/input";
 
 const gardeningInterests: { key: string; label: string }[] = [
   { label: "Organic Gardening", key: "Organic Gardening" },
@@ -47,7 +48,7 @@ export default function EditProfile() {
 
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | undefined>(
-    getMeData?.profilePicture,
+    getMeData?.profilePicture
   );
 
   const onSubmit = async (data: FieldValues) => {
@@ -58,7 +59,6 @@ export default function EditProfile() {
       gardeningExperienceLevel: data?.gardeningExperienceLevel,
       location: data?.location,
       phone: data?.phone,
-      dateOfBirth: data?.dateOfBirth ? dateToISO(data.dateOfBirth) : undefined,
       interest: data?.interests,
       gender: data?.gender,
       facebook: data?.facebook,
@@ -83,7 +83,7 @@ export default function EditProfile() {
           setUser({
             token: res.data,
             user: decoded,
-          }),
+          })
         );
 
         router.push("/dashboard/profile");
@@ -112,7 +112,6 @@ export default function EditProfile() {
     gardeningExperienceLevel: getMeData?.gardeningExperienceLevel || "",
     location: getMeData?.location || "",
     phone: getMeData?.phone || "",
-    dateOfBirth: getMeData?.dateOfBirth || "",
     gender: getMeData?.gender || "",
     interests: getMeData?.interests || "",
     facebook: getMeData?.socialMediaLinks?.facebook || "",
@@ -127,6 +126,11 @@ export default function EditProfile() {
         <Spinner size="lg" />
       ) : (
         <>
+          <h1
+            className={`text-4xl font-bold text-center dark:text-gray-200 text-gray-800 pb-5`}
+          >
+            Edit Profile
+          </h1>
           <Card className="shadow-lg">
             <CardBody className="p-6">
               <GHForm defaultValues={defaultValues} onSubmit={onSubmit}>
@@ -183,11 +187,16 @@ export default function EditProfile() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                       <GHInput label="Location" name="location" type="text" />
                       <GHInput label="Phone" name="phone" type="text" />
-                      <GHDate
+                      <Input
                         label="Date of Birth"
                         name="dateOfBirth"
+                        className="cursor-not-allowed"
                         type="date"
+                        value={getMeData?.dateOfBirth?.split("T")[0]}
+                        disabled
+                        aria-label="Date of Birth"
                       />
+
                       <GHSelect
                         label="Gender"
                         name="gender"

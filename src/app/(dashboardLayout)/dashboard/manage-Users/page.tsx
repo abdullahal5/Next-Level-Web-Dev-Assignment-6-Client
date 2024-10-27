@@ -144,7 +144,7 @@ export default function AllUser() {
           }
       }
     },
-    [],
+    []
   );
 
   if (!users) {
@@ -152,31 +152,38 @@ export default function AllUser() {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <Table
-        aria-label="User table with data from API"
-        className="min-w-[640px] md:w-full"
+    <>
+      <h1
+        className={`text-4xl font-bold text-center dark:text-gray-200 text-gray-800 pb-5`}
       >
-        <TableHeader columns={columns}>
-          {(column) => (
-            <TableColumn
-              key={column.uid}
-              align={column.uid === "actions" ? "center" : "start"}
-            >
-              {column.name}
-            </TableColumn>
-          )}
-        </TableHeader>
-        <TableBody items={users}>
-          {(item) => (
-            <TableRow key={item._id}>
-              {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
-              )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </div>
+        All User
+      </h1>
+      <div className="overflow-x-auto">
+        <Table
+          aria-label="User table with data from API"
+          className="min-w-[640px] md:w-full"
+        >
+          <TableHeader columns={columns}>
+            {(column) => (
+              <TableColumn
+                key={column.uid}
+                align={column.uid === "actions" ? "center" : "start"}
+              >
+                {column.name}
+              </TableColumn>
+            )}
+          </TableHeader>
+          <TableBody items={users}>
+            {(item) => (
+              <TableRow key={item._id}>
+                {(columnKey) => (
+                  <TableCell>{renderCell(item, columnKey)}</TableCell>
+                )}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </>
   );
 }

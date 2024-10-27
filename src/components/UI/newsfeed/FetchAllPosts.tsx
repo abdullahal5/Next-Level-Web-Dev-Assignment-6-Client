@@ -7,7 +7,13 @@ import PostCard from "./PostCard";
 import { IPost } from "@/src/types";
 import { useGetAllPostQuery } from "@/src/redux/features/post/postApi";
 
-const FetchAllPosts = () => {
+const FetchAllPosts = ({
+  searchTerm,
+  category,
+}: {
+  searchTerm: string;
+  category: string;
+}) => {
   const { data: allPosts, isLoading } = useGetAllPostQuery(undefined);
 
   return (
@@ -19,7 +25,7 @@ const FetchAllPosts = () => {
       ) : (
         allPosts?.data?.map((item: IPost) => (
           <div key={item._id}>
-            <PostCard post={item} />
+            <PostCard post={item} searchTerm={searchTerm} category={category} />
           </div>
         ))
       )}

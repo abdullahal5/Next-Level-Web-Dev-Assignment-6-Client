@@ -103,7 +103,6 @@ export interface editUserData {
   gardeningExperienceLevel: string;
   location: string;
   phone: string;
-  dateOfBirth: Date | undefined | string | null;
   gender: string;
   facebook?: string;
   twitter?: string;
@@ -169,8 +168,8 @@ export interface IMyPost {
   comments: string[];
   tags: string[];
   category: string;
-  upvotes: number;
-  downvotes: number;
+  upvotes: string[];
+  downvotes: string[];
   commentsCount: number;
   isPremium: boolean;
   thumbnail: string;
