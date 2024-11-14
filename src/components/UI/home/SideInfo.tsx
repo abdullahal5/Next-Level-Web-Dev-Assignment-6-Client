@@ -1,5 +1,13 @@
 "use client";
-import { useState } from "react";
+import {
+  AwaitedReactNode,
+  JSXElementConstructor,
+  Key,
+  ReactElement,
+  ReactNode,
+  ReactPortal,
+  useState,
+} from "react";
 import { useRouter } from "next/navigation";
 import { FiSearch, FiTrendingUp, FiStar, FiClock } from "react-icons/fi";
 import { FaCrown } from "react-icons/fa";
@@ -104,24 +112,33 @@ const SideInfo = () => {
           <FiClock className="mr-2 text-green-500" /> Recent Posts
         </h2>
         <ul className="space-y-4">
-          {recentPosts?.map((post, index) => (
-            <li
-              key={index}
-              className="border-b border-gray-200 dark:border-gray-700 pb-2 last:border-b-0 last:pb-0"
-            >
-              <a
-                className="block hover:text-blue-500 dark:hover:text-blue-400"
-                href={`/post/${post.id}/${post.title.replace(/\s+/g, "-")}`}
+          {recentPosts?.map(
+            (
+              post: {
+                id: any;
+                title: string;
+                date: string;
+              },
+              index: Key | null | undefined
+            ) => (
+              <li
+                key={index}
+                className="border-b border-gray-200 dark:border-gray-700 pb-2 last:border-b-0 last:pb-0"
               >
-                <h3 className="font-medium text-gray-800 dark:text-white">
-                  {post.title}
-                </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {post.date}
-                </p>
-              </a>
-            </li>
-          ))}
+                <a
+                  className="block hover:text-blue-500 dark:hover:text-blue-400"
+                  href={`/post/${post.id}/${post.title.replace(/\s+/g, "-")}`}
+                >
+                  <h3 className="font-medium text-gray-800 dark:text-white">
+                    {post.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {post.date}
+                  </p>
+                </a>
+              </li>
+            )
+          )}
         </ul>
       </div>
 
