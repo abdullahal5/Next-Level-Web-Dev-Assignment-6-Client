@@ -18,6 +18,7 @@ import GHSelect from "../form/GHSelect";
 import uploadImageToCloudinary from "@/src/utils/uploadImageToCloudinary";
 import { useAppSelector } from "@/src/redux/hook";
 import { useCreatePostMutation } from "@/src/redux/features/post/postApi";
+import generateDescription from "@/src/utils/ImageDescription";
 
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
@@ -109,6 +110,8 @@ const CreatePost = () => {
   const [isPremium, setIsPremium] = useState<boolean>(false);
   const [value, setValue] = useState("");
   const [createPost] = useCreatePostMutation();
+  const [preview, setPreview] = useState("");
+  const [bioFromAI, setBioFromAI] = useState("");
 
   const handleThumbnailUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -121,6 +124,15 @@ const CreatePost = () => {
           "File size exceeds 10 MB limit. Please select a smaller file.",
         );
       }
+
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        setPreview(reader.result as string);
+      };
+
+      reader.readAsDataURL(file);
+
       const url = await uploadImageToCloudinary(file);
 
       if (url) {
@@ -148,12 +160,26 @@ const CreatePost = () => {
     }
   };
 
+  const handleDescriptionGenerate = async () => {
+    try {
+      // console.log({ preview });
+      const response = await generateDescription(
+        preview,
+        "Write a bio shortly (1 or 2 line) for social media post describing the given image that is about gardening blog website",
+      );
+
+      setBioFromAI(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="h-[95%] w-full">
       <GHForm onSubmit={onSubmit}>
         <GHInput label="Title" name="title" type="text" />
         <div className="py-3">
-          <TTextarea label="Bio" name="bio" type="text" />
+          <TTextarea label="Bio" name="bio" type="text" value={bioFromAI} />
         </div>
         <div className="flex items-center gap-2.5 py-3">
           <div className="flex-1">
@@ -195,6 +221,9 @@ const CreatePost = () => {
             />
           )}
         </div>
+        <Button className="border" onClick={() => handleDescriptionGenerate()}>
+          Generate
+        </Button>
 
         <ReactQuill
           className="mt-3"

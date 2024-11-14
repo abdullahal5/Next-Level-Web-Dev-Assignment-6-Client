@@ -4,11 +4,14 @@ import Image from "next/image";
 import GHForm from "../../form/GHForm";
 import GHInput from "../../form/GHInput";
 
+import Filter from "./Filter";
+
 const TopNews = () => {
   const onsubmit = () => {};
 
   return (
     <>
+      <Filter />
       <div className="lg:w-1/2 md:w-1/2 mx-auto my-5">
         <GHForm onSubmit={onsubmit}>
           <GHInput label="Search" name="search" type="search" />

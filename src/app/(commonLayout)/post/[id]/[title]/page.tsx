@@ -37,14 +37,18 @@ import { useCreateCommentMutation } from "@/src/redux/features/comment/commentAp
 import CommentCard from "@/src/components/UI/newsfeed/CommentCard";
 import AuthenticationModal from "@/src/components/AuthenticationModal";
 
-const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
+const BlogsDetailsPage = ({
+  params,
+}: {
+  params: { id: string; title: string };
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const { user } = useAppSelector((state) => state.auth);
   const router = useRouter();
 
   const { data: getSinglePostData, isLoading } = useGetSinlePostQuery({
-    _id: params.detailsBlog,
+    _id: params.id,
   });
 
   const [followAndUnfollow, { isLoading: followLoading }] =
@@ -87,10 +91,10 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
 
       return;
     }
-    if (params?.detailsBlog && user?.userId) {
+    if (params?.id && user?.userId) {
       const commentData = {
         ...formData,
-        postId: params.detailsBlog,
+        postId: params.id,
         userId: user.userId,
       };
       const res = await postComment(commentData);
@@ -357,4 +361,4 @@ const DetailsBlog = ({ params }: { params: { detailsBlog: string } }) => {
   );
 };
 
-export default DetailsBlog;
+export default BlogsDetailsPage;

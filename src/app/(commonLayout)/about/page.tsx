@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { FaLeaf, FaSeedling, FaTree, FaQuoteLeft, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import {
+  FaLeaf,
+  FaSeedling,
+  FaTree,
+  FaQuoteLeft,
+  FaChevronLeft,
+  FaChevronRight,
+} from "react-icons/fa";
 import { motion } from "framer-motion";
 import { Card, CardBody } from "@nextui-org/card";
 import { Button } from "@nextui-org/button";
@@ -12,9 +19,18 @@ const AboutPage = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
   const testimonials = [
-    { name: "Sarah Johnson", text: "Gardening HUB transformed my backyard into a thriving oasis. The community support is incredible!" },
-    { name: "Mike Thompson", text: "As a beginner, I found all the resources I needed to start my gardening journey. Highly recommended!" },
-    { name: "Emily Chen", text: "The sustainable gardening tips have not only improved my garden but also reduced my environmental impact." },
+    {
+      name: "Sarah Johnson",
+      text: "Gardening HUB transformed my backyard into a thriving oasis. The community support is incredible!",
+    },
+    {
+      name: "Mike Thompson",
+      text: "As a beginner, I found all the resources I needed to start my gardening journey. Highly recommended!",
+    },
+    {
+      name: "Emily Chen",
+      text: "The sustainable gardening tips have not only improved my garden but also reduced my environmental impact.",
+    },
   ];
 
   const milestones = [
@@ -28,11 +44,11 @@ const AboutPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-blue-50 dark:from-black text-foreground py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        <motion.h1 
-          initial={{ opacity: 0, y: -50 }}
+        <motion.h1
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
           className="text-5xl font-bold text-center bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent mb-8"
+          initial={{ opacity: 0, y: -50 }}
+          transition={{ duration: 0.5 }}
         >
           About Gardening HUB
         </motion.h1>
@@ -73,8 +89,7 @@ const AboutPage = () => {
             {
               icon: FaLeaf,
               title: "Sustainable Practices",
-              description:
-                "Learn eco-friendly gardening techniques and tips.",
+              description: "Learn eco-friendly gardening techniques and tips.",
             },
             {
               icon: FaTree,
@@ -85,8 +100,8 @@ const AboutPage = () => {
           ].map((item, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 50 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <Card className="h-full">
@@ -104,13 +119,17 @@ const AboutPage = () => {
 
         <Card className="mb-12 shadow-xl">
           <CardBody className="p-8">
-            <h2 className="text-3xl font-semibold text-center mb-6">Our Journey</h2>
+            <h2 className="text-3xl font-semibold text-center mb-6">
+              Our Journey
+            </h2>
             <div className="space-y-4">
               {milestones.map((milestone, index) => (
                 <div key={index} className="flex items-center">
-                  <div className="w-24 text-right mr-4 font-bold text-green-500">{milestone.year}</div>
+                  <div className="w-24 text-right mr-4 font-bold text-green-500">
+                    {milestone.year}
+                  </div>
                   <div className="flex-grow">
-                    <Progress value={(index + 1) * 20} className="mb-2" />
+                    <Progress className="mb-2" value={(index + 1) * 20} />
                     <p>{milestone.event}</p>
                   </div>
                 </div>
@@ -121,23 +140,37 @@ const AboutPage = () => {
 
         <Card className="mb-12 shadow-xl">
           <CardBody className="p-8">
-            <h2 className="text-3xl font-semibold text-center mb-6">What Our Community Says</h2>
+            <h2 className="text-3xl font-semibold text-center mb-6">
+              What Our Community Says
+            </h2>
             <div className="relative">
               <FaQuoteLeft className="text-4xl text-green-400 mb-4" />
-              <p className="text-lg mb-4">{testimonials[currentTestimonial].text}</p>
-              <p className="font-semibold text-right">- {testimonials[currentTestimonial].name}</p>
+              <p className="text-lg mb-4">
+                {testimonials[currentTestimonial].text}
+              </p>
+              <p className="font-semibold text-right">
+                - {testimonials[currentTestimonial].name}
+              </p>
               <div className="flex justify-between mt-4">
                 <Button
                   isIconOnly
                   aria-labelledby="Previous testimonial"
-                  onClick={() => setCurrentTestimonial((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1))}
+                  onClick={() =>
+                    setCurrentTestimonial((prev) =>
+                      prev === 0 ? testimonials.length - 1 : prev - 1,
+                    )
+                  }
                 >
                   <FaChevronLeft />
                 </Button>
                 <Button
                   isIconOnly
                   aria-labelledby="Next testimonial"
-                  onClick={() => setCurrentTestimonial((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1))}
+                  onClick={() =>
+                    setCurrentTestimonial((prev) =>
+                      prev === testimonials.length - 1 ? 0 : prev + 1,
+                    )
+                  }
                 >
                   <FaChevronRight />
                 </Button>
@@ -160,11 +193,7 @@ const AboutPage = () => {
                 placeholder="Enter your email"
                 type="email"
               />
-              <Button
-                color="success"
-                size="lg"
-                className="w-full sm:w-auto"
-              >
+              <Button className="w-full sm:w-auto" color="success" size="lg">
                 Subscribe
               </Button>
             </form>

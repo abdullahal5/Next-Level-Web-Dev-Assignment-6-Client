@@ -13,12 +13,28 @@ const postApi = baseApi.injectEndpoints({
       invalidatesTags: ["post"],
     }),
     getAllPost: builder.query({
-      query: () => ({
-        url: "/post/get-all",
-        method: "GET",
-      }),
+      query: ({
+        query,
+        categories,
+      }: {
+        query?: string;
+        categories?: string;
+      }) => {
+        const searchParam = query ? `searchTerm=${query}` : "";
+        const categoryParam = categories ? `category=${categories}` : "";
+
+        const params = [searchParam, categoryParam].filter(Boolean).join("&");
+
+        const url = `/post/get-all${params ? `?${params}` : ""}`;
+
+        return {
+          url,
+          method: "GET",
+        };
+      },
       providesTags: ["post"],
     }),
+
     getSinlePost: builder.query({
       query: (args) => ({
         url: `/post/get-single/${args._id}`,

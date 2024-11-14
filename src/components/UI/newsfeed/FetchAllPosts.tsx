@@ -14,7 +14,7 @@ const FetchAllPosts = ({
   searchTerm: string;
   category: string;
 }) => {
-  const { data: allPosts, isLoading } = useGetAllPostQuery(undefined);
+  const { data: allPosts, isLoading } = useGetAllPostQuery({});
 
   return (
     <div>
@@ -25,7 +25,7 @@ const FetchAllPosts = ({
       ) : (
         allPosts?.data?.map((item: IPost) => (
           <div key={item._id}>
-            <PostCard post={item} searchTerm={searchTerm} category={category} />
+            <PostCard {...item} />
           </div>
         ))
       )}

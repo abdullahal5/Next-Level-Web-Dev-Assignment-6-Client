@@ -10,6 +10,7 @@ import { useState } from "react";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { Input } from "@nextui-org/input";
 
 import { useAppDispatch, useAppSelector } from "@/src/redux/hook";
 import {
@@ -20,12 +21,9 @@ import { editUserData, IAuthor } from "@/src/types";
 import GHInput from "@/src/components/form/GHInput";
 import GHSelect from "@/src/components/form/GHSelect";
 import GHForm from "@/src/components/form/GHForm";
-import GHDate from "@/src/components/form/GHDate";
 import uploadImageToCloudinary from "@/src/utils/uploadImageToCloudinary";
-import { dateToISO } from "@/src/utils/dateToISO";
 import { setUser } from "@/src/redux/features/auth/authSlice";
 import { verifyToken } from "@/src/utils/jwt";
-import { Input } from "@nextui-org/input";
 
 const gardeningInterests: { key: string; label: string }[] = [
   { label: "Organic Gardening", key: "Organic Gardening" },
@@ -48,7 +46,7 @@ export default function EditProfile() {
 
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | undefined>(
-    getMeData?.profilePicture
+    getMeData?.profilePicture,
   );
 
   const onSubmit = async (data: FieldValues) => {
@@ -83,7 +81,7 @@ export default function EditProfile() {
           setUser({
             token: res.data,
             user: decoded,
-          })
+          }),
         );
 
         router.push("/dashboard/profile");
@@ -188,13 +186,13 @@ export default function EditProfile() {
                       <GHInput label="Location" name="location" type="text" />
                       <GHInput label="Phone" name="phone" type="text" />
                       <Input
-                        label="Date of Birth"
-                        name="dateOfBirth"
-                        className="cursor-not-allowed"
-                        type="date"
-                        value={getMeData?.dateOfBirth?.split("T")[0]}
                         disabled
                         aria-label="Date of Birth"
+                        className="cursor-not-allowed"
+                        label="Date of Birth"
+                        name="dateOfBirth"
+                        type="date"
+                        value={getMeData?.dateOfBirth?.split("T")[0]}
                       />
 
                       <GHSelect

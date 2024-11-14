@@ -31,7 +31,7 @@ const columns = [
 ];
 
 export default function ManageAllPostPage() {
-  const { data: getAllPosts } = useGetAllPostQuery(undefined);
+  const { data: getAllPosts } = useGetAllPostQuery({});
   const [deleteSinglePost] = useDeletePostMutation();
   const posts = getAllPosts?.data as IPost[];
   const router = useRouter();

@@ -127,7 +127,7 @@ const MyContent = () => {
           return null;
       }
     },
-    []
+    [],
   );
 
   return (

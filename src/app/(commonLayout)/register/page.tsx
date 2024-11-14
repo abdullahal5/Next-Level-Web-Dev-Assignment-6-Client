@@ -1,5 +1,4 @@
 "use client";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
 import { FieldValues } from "react-hook-form";
@@ -13,7 +12,6 @@ import { motion } from "framer-motion";
 import GHForm from "@/src/components/form/GHForm";
 import GHInput from "@/src/components/form/GHInput";
 import GHSelect from "@/src/components/form/GHSelect";
-import registerValidationSchema from "@/src/schema/register.schema";
 import { useRegisterMutation } from "@/src/redux/features/auth/authApi";
 import GlobalLoading from "@/src/components/UI/GlobalLoading";
 import { TResponse } from "@/src/types";
@@ -21,12 +19,19 @@ import { verifyToken } from "@/src/utils/jwt";
 import { setUser } from "@/src/redux/features/auth/authSlice";
 import { useAppDispatch } from "@/src/redux/hook";
 import uploadImageToCloudinary from "@/src/utils/uploadImageToCloudinary";
+import GHDate from "@/src/components/form/GHDate";
 
 const genderOptions = [
   { key: "Male", label: "Male" },
   { key: "Female", label: "Female" },
   { key: "Other", label: "Other" },
 ];
+
+interface RegisterData extends FieldValues {
+  dateOfBirth: string;
+  profilePicture?: string;
+  [key: string]: any;
+}
 
 const RegisterPage = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -36,18 +41,20 @@ const RegisterPage = () => {
   const router = useRouter();
 
   const onSubmit = async (data: FieldValues) => {
-    let registerData;
+    const formattedDateOfBirth = `${data?.dateOfBirth.year}-${String(data?.dateOfBirth.month).padStart(2, "0")}-${String(data?.dateOfBirth.day).padStart(2, "0")}`;
+
+    let registerData: RegisterData = {
+      ...data,
+      dateOfBirth: formattedDateOfBirth,
+    };
 
     if (imageFile) {
       const imageUrl = await uploadImageToCloudinary(imageFile);
 
       registerData = {
-        ...data,
+        ...registerData,
         profilePicture: imageUrl,
       };
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      registerData = data;
     }
 
     const res = (await createUser(registerData)) as unknown as TResponse<any>;
@@ -125,35 +132,21 @@ const RegisterPage = () => {
             </CardHeader>
             <CardBody className="px-6 py-8">
               <GHForm
-                resolver={zodResolver(registerValidationSchema)}
+                // resolver={zodResolver(registerValidationSchema)}
                 onSubmit={onSubmit}
               >
                 <div className="space-y-4">
-                  <GHInput
-                    label="Username"
-                    name="username"
-                    // startContent={<FaUser className="text-green-500" />}
-                  />
-                  <GHInput
-                    label="Email"
-                    name="email"
-                    type="email"
-                    // startContent={<FaEnvelope className="text-green-500" />}
-                  />
-                  <GHInput
-                    label="Password"
-                    name="password"
-                    type="password"
-                    // startContent={<FaLock className="text-green-500" />}
-                  />
+                  <GHInput label="Username" name="username" />
+                  <GHInput label="Email" name="email" type="email" />
+                  <GHInput label="Password" name="password" type="password" />
                   <GHSelect
                     label="Gender"
                     name="gender"
                     options={genderOptions}
                     radius="sm"
                     size="lg"
-                    // startContent={<FaVenusMars className="text-green-500" />}
                   />
+                  <GHDate label={"Date of Birth"} name={"dateOfBirth"} />
                   <div className="relative">
                     <input
                       className="hidden"

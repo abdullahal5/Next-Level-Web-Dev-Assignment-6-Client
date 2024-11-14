@@ -67,7 +67,7 @@ export default function Component() {
 
   const handleVerify = () => {
     const allUpvoteCountsGreaterThanFive = myPost?.every(
-      (post) => (post?.upvotes || 0) >= 5
+      (post) => (post?.upvotes || 0) >= 5,
     );
 
     if (getMyPost && allUpvoteCountsGreaterThanFive === false) {
