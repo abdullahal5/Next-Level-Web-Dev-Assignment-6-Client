@@ -6,12 +6,15 @@ import PostCard from "@/src/components/UI/newsfeed/PostCard";
 import { IPost } from "@/src/types";
 
 const PostFetch = ({ categories }: { categories: string }) => {
-  const { data: getAll, isLoading } = useGetAllPostQuery({});
+  const { data: getAll, isFetching } = useGetAllPostQuery({
+    categories: categories,
+  });
+
   const router = useRouter();
 
-  const slicedPosts = getAll?.data?.slice(7) || [];
+  const slicedPosts = getAll?.data?.slice(0, 4) || [];
 
-  if (isLoading) {
+  if (isFetching) {
     return (
       <div className="space-y-8 pt-8">
         {Array.from({ length: 4 }).map((_, index) => (
@@ -82,17 +85,23 @@ const PostFetch = ({ categories }: { categories: string }) => {
 
   return (
     <div className="space-y-8 pt-8">
-      {slicedPosts.map((post: IPost) => (
-        <PostCard key={post._id} {...post} />
-      ))}
-      <div className="flex items-center justify-center">
-        <button
-          className="bg-blue-600 mx-auto text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50"
-          onClick={() => router.push(`/filter?categories=${categories}`)}
-        >
-          Show More
-        </button>
-      </div>
+      {slicedPosts?.length !== 0
+        ? slicedPosts.map((post: IPost) => (
+            <PostCard key={post._id} {...post} />
+          ))
+        : "No Result Found"}
+      {slicedPosts?.length !== 0 ? (
+        <div className="flex items-center justify-center">
+          <button
+            className="bg-blue-600 mx-auto text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50"
+            onClick={() => router.push(`/filter?categories=${categories}`)}
+          >
+            Show More
+          </button>
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 };

@@ -149,7 +149,7 @@ const MyContent = () => {
         title="New Content"
         onClose={onCreateClose}
       >
-        <CreatePost />
+        <CreatePost onClose={onCreateClose} />
       </GlobalModal>
 
       {editingPost && (

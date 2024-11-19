@@ -3,11 +3,14 @@
 import { Button } from "@nextui-org/button";
 import Image from "next/image";
 import { Checkbox } from "@nextui-org/checkbox";
-import { useDisclosure } from "@nextui-org/modal";
 import { FieldValues } from "react-hook-form";
 import { useState } from "react";
 import { toast } from "sonner";
 import dynamic from "next/dynamic";
+
+const ReactQuill = dynamic(() => import("react-quill"), {
+  ssr: false,
+});
 
 import GHInput from "../form/GHInput";
 import GHForm from "../form/GHForm";
@@ -19,10 +22,6 @@ import uploadImageToCloudinary from "@/src/utils/uploadImageToCloudinary";
 import { useAppSelector } from "@/src/redux/hook";
 import { useCreatePostMutation } from "@/src/redux/features/post/postApi";
 import generateDescription from "@/src/utils/ImageDescription";
-
-const ReactQuill = dynamic(() => import("react-quill"), {
-  ssr: false,
-});
 
 const modules = {
   toolbar: {
@@ -103,8 +102,7 @@ const categoryOptions = [
   { key: "watering-systems", label: "Watering Systems" },
 ];
 
-const CreatePost = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+const CreatePost = ({ onClose }: { onClose: () => void }) => {
   const [thumbnail, setThumbnail] = useState<string | null>(null);
   const { user } = useAppSelector((state) => state.auth);
   const [isPremium, setIsPremium] = useState<boolean>(false);
@@ -112,6 +110,7 @@ const CreatePost = () => {
   const [createPost] = useCreatePostMutation();
   const [preview, setPreview] = useState("");
   const [bioFromAI, setBioFromAI] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleThumbnailUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -144,33 +143,38 @@ const CreatePost = () => {
   };
 
   const onSubmit = async (data: FieldValues) => {
-    const postData = {
-      ...data,
-      author: user?.userId,
-      isPremium: isPremium,
-      content: value,
-      thumbnail,
-    };
+    if (bioFromAI) {
+      const postData = {
+        ...data,
+        author: user?.userId,
+        isPremium: isPremium,
+        content: value,
+        bio: bioFromAI,
+        thumbnail,
+      };
 
-    const res = await createPost(postData);
+      const res = await createPost(postData);
 
-    if (res?.data?.statusCode === 200) {
-      toast.success("Post created successfull");
-      onClose();
+      if (res?.data?.statusCode === 200) {
+        toast.success("Post created successfull");
+        onClose();
+      }
     }
   };
 
   const handleDescriptionGenerate = async () => {
     try {
-      // console.log({ preview });
+      setLoading(true);
       const response = await generateDescription(
         preview,
         "Write a bio shortly (1 or 2 line) for social media post describing the given image that is about gardening blog website",
       );
 
       setBioFromAI(response);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      toast.error(error?.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -179,8 +183,40 @@ const CreatePost = () => {
       <GHForm onSubmit={onSubmit}>
         <GHInput label="Title" name="title" type="text" />
         <div className="py-3">
-          <TTextarea label="Bio" name="bio" type="text" value={bioFromAI} />
+          <TTextarea
+            disabled={loading}
+            label="Bio"
+            name="bio"
+            placeholder={loading ? "Generating bio..." : ""}
+            type="text"
+            value={bioFromAI}
+            onChange={(e) => setBioFromAI(e.target.value)}
+          />
         </div>
+        <div className="py-3">
+          <GHInput
+            label="Thumbnail Image"
+            name="thumbnail"
+            type="file"
+            onChange={handleThumbnailUpload}
+          />
+          {thumbnail && (
+            <Image
+              alt="Thumbnail preview"
+              className="mt-3 w-32 mx-auto rounded-md object-cover"
+              height={100}
+              src={thumbnail}
+              width={200}
+            />
+          )}
+        </div>
+        <Button
+          className={`${!thumbnail ? "border" : "bg-green-600"}`}
+          disabled={!thumbnail}
+          onClick={() => handleDescriptionGenerate()}
+        >
+          Generate Bio
+        </Button>
         <div className="flex items-center gap-2.5 py-3">
           <div className="flex-1">
             <GHTagInput label="Tags" name="tags" type="text" />
@@ -203,27 +239,6 @@ const CreatePost = () => {
         >
           Available for premium user only
         </Checkbox>
-
-        <div className="py-3">
-          <GHInput
-            label="Thumbnail Image"
-            name="thumbnail"
-            type="file"
-            onChange={handleThumbnailUpload}
-          />
-          {thumbnail && (
-            <Image
-              alt="Thumbnail preview"
-              className="mt-3 w-32 mx-auto rounded-md object-cover"
-              height={100}
-              src={thumbnail}
-              width={200}
-            />
-          )}
-        </div>
-        <Button className="border" onClick={() => handleDescriptionGenerate()}>
-          Generate
-        </Button>
 
         <ReactQuill
           className="mt-3"

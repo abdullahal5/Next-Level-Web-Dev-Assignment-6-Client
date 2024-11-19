@@ -1,13 +1,5 @@
 "use client";
-import {
-  AwaitedReactNode,
-  JSXElementConstructor,
-  Key,
-  ReactElement,
-  ReactNode,
-  ReactPortal,
-  useState,
-} from "react";
+import { Key, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FiSearch, FiTrendingUp, FiStar, FiClock } from "react-icons/fi";
 import { FaCrown } from "react-icons/fa";
@@ -16,9 +8,9 @@ import { useGetAllPostQuery } from "@/src/redux/features/post/postApi";
 
 const SideInfo = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [email, setEmail] = useState("");
+  // const [email, setEmail] = useState("");
   const router = useRouter();
-  const { data: getAll, isLoading } = useGetAllPostQuery({});
+  const { data: getAll } = useGetAllPostQuery({});
 
   const handleSearch = (event: React.FormEvent) => {
     event.preventDefault();
@@ -27,11 +19,10 @@ const SideInfo = () => {
     }
   };
 
-  const handleNewsletterSignup = (event: React.FormEvent) => {
-    event.preventDefault();
-    console.log("Newsletter signup for:", email);
-    setEmail("");
-  };
+  // const handleNewsletterSignup = (event: React.FormEvent) => {
+  //   event.preventDefault();
+  //   setEmail("");
+  // };
 
   const recentPosts = getAll?.data
     ?.slice(0, 3)
@@ -50,7 +41,7 @@ const SideInfo = () => {
       };
     });
 
-  const trendingTopics = [];
+  // const trendingTopics = [];
 
   // const recentPosts = [
   //   {
@@ -119,7 +110,7 @@ const SideInfo = () => {
                 title: string;
                 date: string;
               },
-              index: Key | null | undefined
+              index: Key | null | undefined,
             ) => (
               <li
                 key={index}
@@ -137,7 +128,7 @@ const SideInfo = () => {
                   </p>
                 </a>
               </li>
-            )
+            ),
           )}
         </ul>
       </div>
@@ -160,7 +151,10 @@ const SideInfo = () => {
             <FiStar className="mr-2" /> Early access to new features
           </li>
         </ul>
-        <button className="w-full bg-white text-purple-600 font-semibold py-2 px-4 rounded-md hover:bg-gray-100 transition duration-300">
+        <button
+          className="w-full bg-white text-purple-600 font-semibold py-2 px-4 rounded-md hover:bg-gray-100 transition duration-300"
+          onClick={() => router.push("/subscription")}
+        >
           Upgrade Now
         </button>
       </div>

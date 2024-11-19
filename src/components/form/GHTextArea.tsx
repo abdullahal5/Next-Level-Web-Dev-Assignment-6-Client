@@ -6,6 +6,7 @@ import { IInput } from "@/src/types";
 interface IProps extends IInput {
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
 }
 
 const TTextarea = ({
@@ -14,6 +15,7 @@ const TTextarea = ({
   value,
   onChange,
   variant = "bordered",
+  placeholder,
 }: IProps) => {
   const {
     register,
@@ -27,6 +29,7 @@ const TTextarea = ({
       errorMessage={(errors[name]?.message as string) ?? ""}
       isInvalid={!!errors[name]}
       maxRows={6}
+      placeholder={placeholder}
       value={value}
       variant={variant}
       onChange={onChange}

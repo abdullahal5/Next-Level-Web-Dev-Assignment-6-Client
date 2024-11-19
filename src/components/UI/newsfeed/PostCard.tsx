@@ -40,7 +40,8 @@ const PostCard = ({
   const [followAndUnfollow, { isLoading: followLoading }] =
     useFollowAndUnfollowUserMutation();
   const { user } = useAppSelector((state) => state.auth);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, setIsModalOpen] = useState(false);
   const [favouritePost, { isLoading: favouriteLoading }] =
     useFavouritePostMutation();
   const { data: getMe } = useGetMeQuery({ _id: user?.userId });
