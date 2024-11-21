@@ -5,9 +5,8 @@ const dahsboardApi = baseApi.injectEndpoints({
     dashbaordData: builder.query({
       query: (args) => {
         return {
-          url: `/dashboard/get-myStats`,
+          url: `/dashboard/get-myStats?query=${args}`,
           method: "GET",
-          body: args,
         };
       },
       providesTags: ["payment", "post", "user"],
