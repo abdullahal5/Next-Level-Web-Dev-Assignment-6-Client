@@ -2,8 +2,9 @@ import HomeBanner from "@/src/components/UI/home/Banner";
 import TrendingBlogCards from "@/src/components/UI/home/Trending";
 import Advertisement from "@/src/components/UI/home/Advertisement";
 import BlogsAndSidebar from "@/src/components/UI/home/BlogsAndSidebar";
+import NewsletterSection from "@/src/components/Newslater";
 
-const Banner = () => {
+const Home = () => {
   return (
     <>
       <HomeBanner />
@@ -15,8 +16,9 @@ const Banner = () => {
         </div>
         <Advertisement />
       </div>
+      <NewsletterSection />
     </>
   );
 };
 
-export default Banner;
+export default Home;

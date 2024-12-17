@@ -14,7 +14,7 @@ type ISize =
   | "full";
 
 interface GlobalModalProps {
-  title: string;
+  title?: string;
   children: ReactNode;
   action: string;
   size?: ISize;

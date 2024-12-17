@@ -1,38 +1,49 @@
 "use client";
 
-import {
-  FaMapMarkerAlt,
-  FaPhone,
-  FaBirthdayCake,
-  FaVenusMars,
-  FaFacebook,
-  FaInstagram,
-  FaTwitter,
-  FaLinkedin,
-} from "react-icons/fa";
-import { FaCheckCircle } from "react-icons/fa";
-import { Card, CardBody } from "@nextui-org/card";
-import { Avatar } from "@nextui-org/avatar";
+import Image from "next/image";
 import { Button } from "@nextui-org/button";
-import { Divider } from "@nextui-org/divider";
-import { Progress } from "@nextui-org/progress";
-import Link from "next/link";
-import { Spinner } from "@nextui-org/spinner";
-import { useRouter, useSearchParams } from "next/navigation";
-import { toast } from "sonner";
+import { Card } from "@nextui-org/card";
+import { Avatar } from "@nextui-org/avatar";
+import {
+  FaCamera,
+  FaEnvelope,
+  FaPhone,
+  FaMapMarkerAlt,
+  FaPen,
+  FaBirthdayCake,
+  FaHeart,
+} from "react-icons/fa";
+import { LiaBrainSolid } from "react-icons/lia";
+import { MdPhotoLibrary, MdEvent, MdArticle } from "react-icons/md";
+import { useSearchParams } from "next/navigation";
+import { CgGenderMale } from "react-icons/cg";
+import { useDisclosure } from "@nextui-org/modal";
+
+import EditProfile from "../edit-profile/page";
 
 import { useAppSelector } from "@/src/redux/hook";
+import { IAuthor, IPost } from "@/src/types";
 import { useGetMeQuery } from "@/src/redux/features/auth/authApi";
-import { IAuthor, IMyPost } from "@/src/types";
-import { formatDate } from "@/src/utils/dateFormat";
+import DashboardMyPostCard from "@/src/components/DashboardMyPostCard";
 import { useGetMyPostQuery } from "@/src/redux/features/post/postApi";
+import GlobalModal from "@/src/components/UI/GlobalModal";
+import CreatePost from "@/src/components/UI/CreatePost";
 
-export default function Component() {
+const ResponsiveSocialProfile = () => {
   const { user } = useAppSelector((state) => state.auth);
   const searchParams = useSearchParams();
   const queryId = searchParams.get("userId");
+  const {
+    isOpen: isEditModalOpen,
+    onOpen: onEditModalOpen,
+    onClose: onEditModalClose,
+  } = useDisclosure();
 
-  const router = useRouter();
+  const {
+    isOpen: isPostModalOpen,
+    onOpen: onPostModalOpen,
+    onClose: onPostModalClose,
+  } = useDisclosure();
 
   const { data: getMe, isFetching } = useGetMeQuery({
     _id: queryId ? queryId : user?.userId,
@@ -40,244 +51,238 @@ export default function Component() {
 
   const getMeData = getMe?.data as IAuthor;
 
-  const { data: getMyPost } = useGetMyPostQuery(undefined);
-
-  const myPost = (getMyPost?.data as IMyPost[]) || [];
-
-  const fields = [
-    getMeData?.username,
-    getMeData?.profilePicture,
-    getMeData?.location,
-    getMeData?.phone,
-    getMeData?.dateOfBirth,
-    getMeData?.gender,
-    getMeData?.gardeningExperienceLevel,
-    getMeData?.bio,
-    getMeData?.interests,
-    getMeData?.socialMediaLinks?.facebook,
-    getMeData?.socialMediaLinks?.twitter,
-    getMeData?.socialMediaLinks?.instagram,
-    getMeData?.socialMediaLinks?.linkedin,
-  ];
-
-  const filledFields = fields.filter((field) => {
-    return !!field && (!Array.isArray(field) || field.length > 0);
-  }).length;
-  const profileCompletion = Math.round((filledFields / fields.length) * 100);
-
-  const handleVerify = () => {
-    const allUpvoteCountsGreaterThanFive = myPost?.every(
-      (post) => (post?.upvotes.length || 0) >= 5,
-    );
-
-    if (getMyPost && allUpvoteCountsGreaterThanFive === false) {
-      toast.error("You need atleast 5 likes in your post");
-    } else {
-      router.push("/subscription");
-    }
-  };
+  const { data: getMyPost, isLoading: getMyPostLoading } =
+    useGetMyPostQuery(undefined);
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      {isFetching ? (
-        <Spinner size="lg" />
-      ) : (
-        <>
-          <h1
-            className={`text-4xl font-bold text-center dark:text-gray-200 text-gray-800 pb-5`}
-          >
-            Profile
-          </h1>
-          <Progress
-            className="pb-5"
-            color="success"
-            label={`Profile Completion (${profileCompletion}%)`}
-            size="md"
-            value={profileCompletion}
+    <>
+      <div className="max-w-5xl mx-auto shadow-xl rounded-b-xl mt-10 px-4 sm:px-6 lg:px-8">
+        <div className="relative h-[180px]">
+          <Image
+            alt="Cover"
+            className="rounded-t-xl"
+            layout="fill"
+            objectFit="cover"
+            src="https://img.freepik.com/free-photo/senior-couple-caring-flowers_23-2148256695.jpg?ga=GA1.1.196076015.1725610901&semt=ais_hybrid"
           />
-          <Card className="shadow-lg">
-            <CardBody className="p-6">
-              <div className="flex flex-col lg:flex-row gap-8">
-                <div className="lg:w-1/3">
-                  <div className="flex flex-col items-center text-center">
-                    <div className="relative flex flex-col items-center">
-                      <Avatar
-                        alt={getMeData?.username}
-                        className={`w-32 h-32 text-large mb-4 ${getMeData?.isVerified ? "border-4 border-blue-500" : ""}`}
-                        src={getMeData?.profilePicture}
-                      />
-                      {getMeData?.isVerified && (
-                        <div className="absolute bottom-1 border border-blue-600 right-0 mb-1 ml-1 p-1 rounded-full">
-                          <FaCheckCircle className="w-5 h-5 text-blue-500" />
-                        </div>
-                      )}
-                    </div>
-                    <h2 className="text-2xl font-bold mb-2">
-                      {getMeData?.username}
-                    </h2>
-                    {getMeData?.gardeningExperienceLevel && (
-                      <p className="border px-3 py-1 my-2 rounded-md text-xs border-gray-600">
-                        {getMeData?.gardeningExperienceLevel}
-                      </p>
-                    )}
-                    {getMeData?.bio && (
-                      <p className="text-default-500 mb-4 text-sm">
-                        {getMeData?.bio}
-                      </p>
-                    )}
+          <button className="absolute bottom-4 right-4 bg-white dark:bg-gray-800 p-2 rounded-full shadow-lg">
+            <FaCamera className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+          </button>
+        </div>
 
-                    <div className="flex justify-center gap-4 mb-4">
-                      <div>
-                        <span className="font-semibold text-success">
-                          {getMeData?.followers.length}
-                        </span>
-                        <p className="text-small text-default-500">Followers</p>
-                      </div>
-                      <Divider orientation="vertical" />
-                      <div>
-                        <span className="font-semibold text-success">
-                          {getMeData?.following.length}
-                        </span>
-                        <p className="text-small text-default-500">Following</p>
-                      </div>
-                      <Divider orientation="vertical" />
-                      <div>
-                        <span className="font-semibold text-success">
-                          {myPost?.length || "0"}
-                        </span>
-                        <p className="text-small text-default-500">Posts</p>
-                      </div>
-                    </div>
-                    {getMeData?._id === user?.userId && (
-                      <>
-                        <Link className="w-full" href="/dashboard/edit-profile">
-                          <div className="w-full">
-                            <Button
-                              className="w-full text-white"
-                              color="success"
-                              variant="solid"
-                            >
-                              Edit Profile
-                            </Button>
-                          </div>
-                        </Link>
-                        {getMeData?.isVerified === false ? (
-                          <div className="w-full mt-4">
-                            <Button
-                              className="w-full"
-                              color="secondary"
-                              variant="solid"
-                              onClick={handleVerify}
-                            >
-                              Verify
-                            </Button>
-                          </div>
-                        ) : (
-                          ""
-                        )}
-                      </>
-                    )}
-                  </div>
-                </div>
-
-                <Divider className="hidden lg:block" orientation="vertical" />
-
-                <div className="lg:w-2/3">
-                  <h3 className="text-xl font-semibold mb-4">About Me</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div className="flex items-center gap-2">
-                      <FaMapMarkerAlt className="text-success" />
-                      <span>{getMeData?.location || "Not provided"}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <FaPhone className="text-success" />
-                      <span>{getMeData?.phone || "Not provided"}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <FaBirthdayCake className="text-success" />
-                      <span>
-                        {formatDate(getMeData?.dateOfBirth) || "Not provided"}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <FaVenusMars className="text-success" />
-                      <span>{getMeData?.gender || "Not provided"}</span>
-                    </div>
-                  </div>
-
-                  <Divider className="my-6" />
-
-                  <h3 className="text-xl font-semibold mb-4">
-                    Gardening Interests
-                  </h3>
-                  <div className="flex flex-wrap gap-3 mb-6">
-                    {!getMeData?.interests
-                      ? "Not Provided"
-                      : getMeData?.interests}
-                  </div>
-
-                  <Divider className="my-6" />
-
-                  <h3 className="text-xl font-semibold mb-4">Social Media</h3>
-                  <div className="flex gap-4">
-                    {getMeData?.socialMediaLinks?.facebook ||
-                    getMeData?.socialMediaLinks?.twitter ||
-                    getMeData?.socialMediaLinks?.instagram ||
-                    getMeData?.socialMediaLinks?.linkedin ? (
-                      <>
-                        {getMeData?.socialMediaLinks?.facebook && (
-                          <a
-                            aria-label="Facebook"
-                            href={getMeData?.socialMediaLinks?.facebook}
-                            rel="noopener noreferrer"
-                            target="_blank"
-                          >
-                            <FaFacebook className="text-3xl text-success hover:text-success-400" />
-                          </a>
-                        )}
-                        {getMeData?.socialMediaLinks?.twitter && (
-                          <a
-                            aria-label="Twitter"
-                            href={getMeData?.socialMediaLinks?.twitter}
-                            rel="noopener noreferrer"
-                            target="_blank"
-                          >
-                            <FaTwitter className="text-3xl text-success hover:text-success-400" />
-                          </a>
-                        )}
-                        {getMeData?.socialMediaLinks?.instagram && (
-                          <a
-                            aria-label="Instagram"
-                            href={getMeData?.socialMediaLinks?.instagram}
-                            rel="noopener noreferrer"
-                            target="_blank"
-                          >
-                            <FaInstagram className="text-3xl text-success hover:text-success-400" />
-                          </a>
-                        )}
-                        {getMeData?.socialMediaLinks?.linkedin && (
-                          <a
-                            aria-label="LinkedIn"
-                            href={getMeData?.socialMediaLinks?.linkedin}
-                            rel="noopener noreferrer"
-                            target="_blank"
-                          >
-                            <FaLinkedin className="text-3xl text-success hover:text-success-400" />
-                          </a>
-                        )}
-                      </>
-                    ) : (
-                      <p className="text-default-500">
-                        No social media links provided
-                      </p>
-                    )}
-                  </div>
+        <div className="relative pb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col sm:flex-row items-center sm:items-end space-y-2 sm:space-y-0 sm:space-x-4">
+              <div className="relative -mt-20 lg:pl-7 md:lg:pl-7 z-10">
+                <Avatar
+                  alt="Profile Picture"
+                  className="w-32 h-32 sm:w-40 sm:h-40 border-4 border-white dark:border-gray-900 rounded-full"
+                  src={getMeData?.profilePicture}
+                />
+                <button className="absolute bottom-2 right-2 bg-white dark:bg-gray-800 p-2 rounded-full shadow-lg">
+                  <FaCamera className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+                </button>
+              </div>
+              <div className="text-center sm:text-left pb-4">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+                  {getMeData?.username}
+                </h1>
+                <div className="text-sm text-blue-600 dark:text-blue-400 space-x-2">
+                  <span>{getMeData?.followers?.length} Followers</span>
+                  <span>|</span>
+                  <span>{getMeData?.following?.length} Following</span>
                 </div>
               </div>
-            </CardBody>
-          </Card>
-        </>
-      )}
-    </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2 sm:mt-0">
+              <Button
+                className="font-semibold w-full sm:w-auto"
+                color="primary"
+                startContent={<FaPen className="w-4 h-4" />}
+                onPress={onEditModalOpen}
+              >
+                Edit Profile
+              </Button>
+              <Button
+                className="font-semibold w-full sm:w-auto"
+                color="default"
+                onPress={onPostModalOpen}
+              >
+                Create Post
+              </Button>
+              <GlobalModal
+                action="Create Post"
+                isOpen={isPostModalOpen}
+                size="xl"
+                title="New Content"
+                onClose={onPostModalClose}
+              >
+                <CreatePost onClose={onPostModalClose} />
+              </GlobalModal>
+            </div>
+          </div>
+
+          <div className="flex flex-col lg:flex-row items-start gap-5 pt-5">
+            <div className="w-full lg:w-96 lg:sticky lg:top-[4rem]">
+              <Card className="p-4 w-full lg:w-96 mb-5">
+                <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+                  Intro
+                </h2>
+                <div className="space-y-3">
+                  <p className="text-center">{getMeData?.bio}</p>
+
+                  <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                    <FaEnvelope className="w-5 h-5 flex-shrink-0" />
+                    <span className="truncate">
+                      Email <strong>{getMeData?.email || "N/A"}</strong>
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                    <FaPhone className="w-5 h-5 flex-shrink-0" />
+                    <span className="truncate">
+                      Contact <strong>{getMeData?.phone || "N/A"}</strong>
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                    <FaMapMarkerAlt className="w-5 h-5 flex-shrink-0" />
+                    <span className="truncate">
+                      From <strong>{getMeData?.location || "N/A"}</strong>
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                    <CgGenderMale className="w-5 h-5 flex-shrink-0" />
+                    <span className="truncate">
+                      Gender <strong>{getMeData?.gender || "N/A"}</strong>
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                    <FaBirthdayCake className="w-5 h-5 flex-shrink-0" />
+                    <span className="truncate">
+                      Date of Birth{" "}
+                      <strong>{getMeData?.dateOfBirth || "N/A"}</strong>
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                    <FaHeart className="w-5 h-5 flex-shrink-0" />
+                    <span className="truncate">
+                      Interest <strong>{getMeData?.interests || "N/A"}</strong>
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                    <LiaBrainSolid className="w-5 h-5 flex-shrink-0" />
+                    <span className="truncate">
+                      Experience{" "}
+                      <strong>
+                        {getMeData?.gardeningExperienceLevel || "N/A"}
+                      </strong>
+                    </span>
+                  </div>
+                  <Button
+                    className="w-full mt-2"
+                    color="default"
+                    startContent={<FaPen className="w-4 h-4" />}
+                    variant="bordered"
+                    onPress={onEditModalOpen}
+                  >
+                    Edit Profile
+                  </Button>
+                </div>
+              </Card>
+              <Card className="p-3 w-full lg:w-96 flex flex-col gap-2">
+                <h1 className="text-2xl">Photos</h1>
+                <div className="flex flex-wrap gap-2">
+                  {getMyPost?.data
+                    ?.slice(0, 5)
+                    ?.map((post: IPost) => (
+                      <Image
+                        key={post._id}
+                        alt="post Images"
+                        className="rounded-md"
+                        height={110}
+                        src={post.thumbnail}
+                        width={110}
+                      />
+                    ))}
+                </div>
+              </Card>
+            </div>
+            <div className="flex-1 w-full">
+              <Card className="w-full mb-5 p-4">
+                <div className="flex space-x-2 mb-4">
+                  <div className="w-10 h-10 flex-shrink-0">
+                    <Avatar
+                      alt="Profile Picture"
+                      className="w-10 h-10 rounded-full object-cover"
+                      src={getMeData?.profilePicture}
+                    />
+                  </div>
+                  <input
+                    placeholder="Post Here, What's on your Mind?"
+                    type="text"
+                    className="w-full bg-gray-100 dark:bg-gray-700 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    // onClick={onPostModalOpen}
+                  />
+                </div>
+                <div className="flex flex-wrap justify-between items-center pt-2 border-t dark:border-gray-700">
+                  <Button
+                    className="flex-1 min-w-[33%]"
+                    startContent={
+                      <MdPhotoLibrary className="w-5 h-5 text-green-500" />
+                    }
+                    variant="light"
+                    onPress={onPostModalOpen}
+                  >
+                    Media
+                  </Button>
+                  <Button
+                    className="flex-1 min-w-[33%]"
+                    startContent={
+                      <MdEvent className="w-5 h-5 text-yellow-500" />
+                    }
+                    variant="light"
+                    onPress={onPostModalOpen}
+                  >
+                    Event
+                  </Button>
+                  <Button
+                    className="flex-1 min-w-[33%]"
+                    startContent={
+                      <MdArticle className="w-5 h-5 text-blue-500" />
+                    }
+                    variant="light"
+                    onPress={onPostModalOpen}
+                  >
+                    Write article
+                  </Button>
+                </div>
+              </Card>
+
+              <div className="space-y-5">
+                {getMyPost?.data?.length > 0 ? (
+                  getMyPost?.data?.map((post: IPost) => (
+                    <DashboardMyPostCard key={post._id} post={post} />
+                  ))
+                ) : (
+                  <p className="text-center text-lg">
+                    You didn&apos;t post anything yet
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <GlobalModal
+        action="Create Post"
+        isOpen={isEditModalOpen}
+        size="4xl"
+        onClose={onEditModalClose}
+      >
+        <EditProfile />
+      </GlobalModal>
+    </>
   );
-}
+};
+
+export default ResponsiveSocialProfile;

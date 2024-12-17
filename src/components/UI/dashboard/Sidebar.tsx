@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   IoHomeOutline,
   IoClose,
@@ -103,7 +103,7 @@ const Sidebar = () => {
 
   const handleLogout = () => {
     dispatch(logout());
-    router.push("/");
+    router.push("/login");
   };
 
   if (!isMounted) return null;
@@ -111,32 +111,8 @@ const Sidebar = () => {
 
   return (
     <>
-      <Button
-        isIconOnly
-        aria-label="Toggle Sidebar"
-        className="fixed top-4 left-4 z-50"
-        id="toggle-sidebar"
-        onClick={toggleSidebar}
-      >
-        ☰
-      </Button>
-
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            animate={{ opacity: 1 }}
-            className="fixed inset-0 bg-black bg-opacity-50 z-40"
-            exit={{ opacity: 0 }}
-            initial={{ opacity: 0 }}
-            transition={{ duration: 0.1 }}
-          />
-        )}
-      </AnimatePresence>
-
       <motion.div
-        animate={{ x: isOpen ? 0 : "-100%" }}
-        className={`fixed top-0 left-0 h-screen w-80 bg-white dark:bg-gray-900 shadow-xl z-50 overflow-y-auto
-                    ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 transition-transform duration-200 ease-out`}
+        className={`relative overflow-hidden h-full w-80 bg-white dark:bg-gray-900 shadow-xl overflow-y-auto`}
         id="sidebar"
         initial={false}
       >

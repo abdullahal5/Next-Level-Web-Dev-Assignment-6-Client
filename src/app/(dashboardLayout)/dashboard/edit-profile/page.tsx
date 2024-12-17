@@ -46,7 +46,7 @@ export default function EditProfile() {
 
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | undefined>(
-    getMeData?.profilePicture,
+    getMeData?.profilePicture
   );
 
   const onSubmit = async (data: FieldValues) => {
@@ -59,10 +59,6 @@ export default function EditProfile() {
       phone: data?.phone,
       interest: data?.interests,
       gender: data?.gender,
-      facebook: data?.facebook,
-      twitter: data?.twitter,
-      instagram: data?.instagram,
-      linkedin: data?.linkedin,
     };
 
     if (profileImage) {
@@ -81,7 +77,7 @@ export default function EditProfile() {
           setUser({
             token: res.data,
             user: decoded,
-          }),
+          })
         );
 
         router.push("/dashboard/profile");
@@ -112,10 +108,6 @@ export default function EditProfile() {
     phone: getMeData?.phone || "",
     gender: getMeData?.gender || "",
     interests: getMeData?.interests || "",
-    facebook: getMeData?.socialMediaLinks?.facebook || "",
-    twitter: getMeData?.socialMediaLinks?.twitter || "",
-    instagram: getMeData?.socialMediaLinks?.instagram || "",
-    linkedin: getMeData?.socialMediaLinks?.linkedin || "",
   };
 
   return (
@@ -124,65 +116,49 @@ export default function EditProfile() {
         <Spinner size="lg" />
       ) : (
         <>
-          <h1
-            className={`text-4xl font-bold text-center dark:text-gray-200 text-gray-800 pb-5`}
-          >
-            Edit Profile
-          </h1>
-          <Card className="shadow-lg">
-            <CardBody className="p-6">
+          <Card>
+            <h1 className="text-5xl font-extrabold text-center text-gray-800 dark:text-gray-200 pt-6">
+              Edit Profile
+            </h1>
+            <CardBody className="p-8">
               <GHForm defaultValues={defaultValues} onSubmit={onSubmit}>
-                <div className="flex flex-col lg:flex-row gap-8">
-                  <div className="lg:w-1/3">
-                    <div className="flex flex-col items-center text-center space-y-5">
-                      {getMeData && (
-                        <Avatar
-                          alt={getMeData?.username}
-                          className="w-32 h-32 text-large mb-4"
-                          name="profilePicture"
-                          src={previewImage}
-                        />
-                      )}
-                      <input
-                        accept="image/*"
-                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                        type="file"
-                        onChange={handleImageChange}
+                <div className="flex flex-col lg:flex-row gap-10">
+                  {/* Avatar and Basic Info Section */}
+                  <div className="lg:w-1/3 flex flex-col items-center text-center space-y-6">
+                    {getMeData && (
+                      <Avatar
+                        alt={getMeData?.username}
+                        className="w-36 h-36 rounded-full mb-4 shadow-lg"
+                        src={previewImage}
                       />
-
-                      <GHInput label="Username" name="username" type="text" />
-
-                      <GHInput label="Bio" name="bio" type="text" />
-
-                      <GHSelect
-                        label="Gardening Experience"
-                        name="gardeningExperienceLevel"
-                        options={[
-                          { label: "Beginner", key: "Beginner" },
-                          { label: "Intermediate", key: "Intermediate" },
-                          { label: "Expert", key: "Expert" },
-                        ]}
-                        radius={"sm"}
-                        size="sm"
-                      />
-
-                      <Button
-                        className="w-full mt-4"
-                        color="success"
-                        isLoading={updateLoading}
-                        type="submit"
-                        variant="solid"
-                      >
-                        Save Profile
-                      </Button>
-                    </div>
+                    )}
+                    <input
+                      accept="image/*"
+                      className="block w-full text-sm text-gray-600 file:py-2 file:px-4 file:rounded-full file:border-0 file:font-medium file:bg-blue-100 file:text-blue-800 hover:file:bg-blue-200"
+                      type="file"
+                      onChange={handleImageChange}
+                    />
+                    <GHInput label="Username" name="username" type="text" />
+                    <GHInput label="Bio" name="bio" type="text" />
+                    <GHSelect
+                      label="Gardening Experience"
+                      name="gardeningExperienceLevel"
+                      options={[
+                        { label: "Beginner", key: "Beginner" },
+                        { label: "Intermediate", key: "Intermediate" },
+                        { label: "Expert", key: "Expert" },
+                      ]}
+                      radius={"sm"}
+                    />
                   </div>
 
+                  {/* Divider */}
                   <Divider className="hidden lg:block" orientation="vertical" />
 
-                  <div className="lg:w-2/3">
-                    <h3 className="text-xl font-semibold mb-4">About Me</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  {/* About Me Section */}
+                  <div className="lg:w-2/3 space-y-8">
+                    <h3 className="text-2xl font-semibold">About Me</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <GHInput label="Location" name="location" type="text" />
                       <GHInput label="Phone" name="phone" type="text" />
                       <Input
@@ -194,7 +170,6 @@ export default function EditProfile() {
                         type="date"
                         value={getMeData?.dateOfBirth?.split("T")[0]}
                       />
-
                       <GHSelect
                         label="Gender"
                         name="gender"
@@ -204,13 +179,10 @@ export default function EditProfile() {
                           { label: "Other", key: "Other" },
                         ]}
                         radius={"sm"}
-                        size="sm"
                       />
                     </div>
-
                     <Divider className="my-6" />
-
-                    <h3 className="text-xl font-semibold mb-4">
+                    <h3 className="text-2xl font-semibold">
                       Gardening Interests
                     </h3>
                     <GHSelect
@@ -219,23 +191,16 @@ export default function EditProfile() {
                       options={gardeningInterests}
                       radius={"sm"}
                       size="lg"
-                      type="text"
                     />
-
-                    <Divider className="my-6" />
-
-                    <h3 className="text-xl font-semibold mb-4">Social Media</h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      <GHInput label="Facebook" name="facebook" type="text" />
-                      <GHInput
-                        defaultValue={getMeData?.socialMediaLinks?.twitter}
-                        label="Twitter"
-                        name="twitter"
-                        type="text"
-                      />
-                      <GHInput label="Instagram" name="instagram" type="text" />
-                      <GHInput label="Linkedin" name="linkedin" type="text" />
-                    </div>
+                    <Button
+                      className="w-full mt-4"
+                      color="success"
+                      isLoading={updateLoading}
+                      type="submit"
+                      variant="solid"
+                    >
+                      Save Profile
+                    </Button>
                   </div>
                 </div>
               </GHForm>

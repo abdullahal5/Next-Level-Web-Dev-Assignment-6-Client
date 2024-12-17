@@ -67,7 +67,7 @@ const postApi = baseApi.injectEndpoints({
         url: "/post/get-my",
         method: "GET",
       }),
-      providesTags: ["post"],
+      providesTags: ["post", "user"],
     }),
     updatePost: builder.mutation({
       query: (args) => {

@@ -1,14 +1,15 @@
 import { ReactNode } from "react";
 
-import Sidebar from "@/src/components/UI/dashboard/Sidebar";
+import { Navbar } from "@/src/components/navbar";
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="flex items-start">
-      <div className="">
+    <div className="">
+      {/* <div className="h-full overflow-hidden">
         <Sidebar />
-      </div>
-      <div className="flex-1 lg:p-10 p-5">{children}</div>
+      </div> */}
+      <Navbar />
+      <div className="lg:p-10 mx-auto p-5 h-screen">{children}</div>
     </div>
   );
 };

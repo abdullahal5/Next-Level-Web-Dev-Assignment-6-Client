@@ -20,7 +20,7 @@ import { ThemeSwitch } from "@/src/components/theme-switch";
 
 export const Navbar = () => {
   return (
-    <NextUINavbar maxWidth="xl" position="sticky">
+    <NextUINavbar className="shadow-md fixed top-0 left-0" maxWidth="xl">
       <NavbarContent className="basis-1/5 sm:basis-full flex justify-start items-center">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">

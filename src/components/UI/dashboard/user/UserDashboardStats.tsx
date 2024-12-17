@@ -1,8 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
-import { FaUsers, FaFileAlt, FaDollarSign } from "react-icons/fa";
-import { XAxis, YAxis, Tooltip, Legend, Area, AreaChart } from "recharts";
+import { FaUsers, FaFileAlt } from "react-icons/fa";
+import { SlUserFollowing } from "react-icons/sl";
+import { useTheme } from "next-themes";
 
 import { useDashbaordDataQuery } from "@/src/redux/features/dashboard/dashboardApi";
 
@@ -13,60 +14,9 @@ export interface Root {
 }
 
 const UserDashboardStats = () => {
-  const [selectedFilter, setSelectedFilter] = useState<string>("total");
-  const { data: dashboard } = useDashbaordDataQuery(selectedFilter);
-
-  const mydata = dashboard?.data as Root;
-
-  let data = [
-    {
-      name: "Total Paid",
-      count: dashboard?.data?.dashboardData?.totalPaymentAmount || 0,
-    },
-    {
-      name: "Payments",
-      count: dashboard?.data?.dashboardData?.totalPayments || 0,
-    },
-    {
-      name: "Posts",
-      totalPosts: 150,
-      count: dashboard?.data?.dashboardData?.totalPosts || 0,
-    },
-    {
-      name: "Total Upvotes",
-      count: dashboard?.data?.dashboardData?.totalUpvotes || 0,
-    },
-    {
-      name: "Total Downvotes",
-      count: dashboard?.data?.dashboardData?.totalDownvotes || 0,
-    },
-  ];
-
-  if (selectedFilter === "posts") {
-    const postData = dashboard?.data?.postData || [];
-
-    data = postData.map(
-      (post: { title: string | any[]; upvotes: any; downvotes: any }) => ({
-        name: post.title.slice(0, 3),
-        upvotes: post.upvotes,
-        downvotes: post.downvotes,
-      }),
-    );
-  } else if (selectedFilter === "payments") {
-    const paymentData = dashboard?.data?.paymentData || [];
-
-    data = paymentData.map(
-      (payment: { planTitle: any; amount: any; status: any }) => ({
-        name: payment.planTitle,
-        amount: payment.amount,
-        status: payment.status,
-      }),
-    );
-  }
-
-  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedFilter(e.target.value);
-  };
+  const { data: dashboard } = useDashbaordDataQuery(undefined);
+  const { theme } = useTheme();
+  const cardClass = `border ${theme === "dark" ? "bg-gray-900 border-gray-700 text-white" : "bg-white border-gray-200 text-gray-800"} shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105`;
 
   return (
     <>
@@ -75,117 +25,64 @@ const UserDashboardStats = () => {
           Dashboard Overview
         </h1>
         <div className="grid gap-8 md:grid-cols-3 grid-cols-1">
-          <Card className="bg-gray-900 border border-gray-700 text-white shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105">
+          <Card className={cardClass}>
             <CardHeader className="flex items-center gap-4">
-              <FaFileAlt className="text-5xl text-blue-400" />
-              <h2 className="text-xl font-semibold">My Posts</h2>
+              <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900">
+                <FaFileAlt className="text-4xl text-blue-500 dark:text-blue-300" />
+              </div>
+              <h2 className="text-xl font-semibold">Total Posts</h2>
             </CardHeader>
             <CardBody>
-              <div className="text-3xl font-semibold">
-                {mydata?.postCount || 0}
-              </div>
-              <div className="text-sm text-gray-400 mt-1">
+              <p className="text-3xl font-semibold">
+                {dashboard?.data?.getTotalPostData}
+              </p>
+              <p
+                className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"} mt-1`}
+              >
                 Posts created so far
-              </div>
+              </p>
             </CardBody>
           </Card>
 
-          <Card className="bg-gray-900 border border-gray-700 text-white shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105">
+          <Card className={cardClass}>
             <CardHeader className="flex items-center gap-4">
-              <FaUsers className="text-5xl text-green-400" />
+              <div className="p-3 rounded-full bg-green-100 dark:bg-green-900">
+                <FaUsers className="text-4xl text-green-500 dark:text-green-300" />
+              </div>
               <h2 className="text-xl font-semibold">Total Followers</h2>
             </CardHeader>
             <CardBody>
-              <div className="text-3xl font-semibold">
-                {mydata?.followers || 0}
-              </div>
-              <div className="text-sm text-gray-400 mt-1">
-                Reactions received
-              </div>
+              <p className="text-3xl font-semibold">
+                {dashboard?.data?.totalFollowers}
+              </p>
+              <p
+                className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"} mt-1`}
+              >
+                Your Followers
+              </p>
             </CardBody>
           </Card>
 
-          <Card className="bg-gray-900 border border-gray-700 text-white shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105">
+          <Card className={cardClass}>
             <CardHeader className="flex items-center gap-4">
-              <FaDollarSign className="text-5xl text-yellow-400" />
+              <div className="p-3 rounded-full bg-yellow-100 dark:bg-yellow-900">
+                <SlUserFollowing className="text-4xl text-yellow-500 dark:text-yellow-300" />
+              </div>
               <h2 className="text-xl font-semibold">Total Following</h2>
             </CardHeader>
             <CardBody>
-              <div className="text-3xl font-semibold">
-                {mydata?.following || 0}
-              </div>
-              <div className="text-sm text-gray-400 mt-1">Comments made</div>
+              <p className="text-3xl font-semibold">
+                {dashboard?.data?.totalFollowings}
+              </p>
+              <p
+                className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"} mt-1`}
+              >
+                You Following
+              </p>
             </CardBody>
           </Card>
         </div>
       </div>
-
-      <div className="text-center">
-        <select
-          className="p-2 bg-gray-800 text-white rounded-md"
-          value={selectedFilter}
-          onChange={handleFilterChange}
-        >
-          <option value="total">Total Overview</option>
-          <option value="posts">Post Stats</option>
-          <option value="payments">Payment Stats</option>
-        </select>
-      </div>
-
-      <AreaChart
-        className="mx-auto"
-        data={data}
-        height={350}
-        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-        width={1200}
-      >
-        <defs>
-          <linearGradient id="colorUv" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-            <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-          </linearGradient>
-          <linearGradient id="colorPv" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
-            <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
-          </linearGradient>
-        </defs>
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        {selectedFilter === "payments" && (
-          <>
-            <Area
-              dataKey={`status`}
-              fill="url(#colorUv)"
-              fillOpacity={1}
-              stroke="#8884d8"
-              type="monotone"
-            />
-            <Area
-              dataKey={`amount`}
-              fill="url(#colorPv)"
-              fillOpacity={1}
-              stroke="#82ca9d"
-              type="monotone"
-            />
-          </>
-        )}
-        <Area
-          dataKey={`${selectedFilter === "total" ? "count" : "upvotes"}`}
-          fill="url(#colorUv)"
-          fillOpacity={1}
-          stroke="#8884d8"
-          type="monotone"
-        />
-        <Area
-          dataKey={`${selectedFilter === "total" ? "count" : "downvotes"}`}
-          fill="url(#colorPv)"
-          fillOpacity={1}
-          stroke="#82ca9d"
-          type="monotone"
-        />
-      </AreaChart>
     </>
   );
 };

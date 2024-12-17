@@ -21,7 +21,7 @@ const generateDescription = async (imageURL: string, prompt: string) => {
   ];
 
   const genAI = new GoogleGenerativeAI(
-    "AIzaSyCyEXVy7JbNXG0t-WihSupGiLgwS16_zlc",
+    "AIzaSyCW-ycDq4_9GfR-oUGrhWWeMhzShzQGqbg",
   );
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 

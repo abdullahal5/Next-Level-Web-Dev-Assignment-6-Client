@@ -163,6 +163,8 @@ const CreatePost = ({ onClose }: { onClose: () => void }) => {
   };
 
   const handleDescriptionGenerate = async () => {
+    if (!preview) return toast.warning("Please upload image first");
+
     try {
       setLoading(true);
       const response = await generateDescription(
@@ -212,7 +214,6 @@ const CreatePost = ({ onClose }: { onClose: () => void }) => {
         </div>
         <Button
           className={`${!thumbnail ? "border" : "bg-green-600"}`}
-          disabled={!thumbnail}
           onClick={() => handleDescriptionGenerate()}
         >
           Generate Bio
