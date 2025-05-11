@@ -1,15 +1,18 @@
 import { ReactNode } from "react";
 
-import { Navbar } from "@/src/components/navbar";
+import Sidebar from "@/src/components/UI/dashboard/Sidebar";
+import DashboardTop from "@/src/components/DashboardTop";
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="">
-      {/* <div className="h-full overflow-hidden">
+    <div className="flex h-screen">
+      <div className="h-full overflow-hidden">
         <Sidebar />
-      </div> */}
-      <Navbar />
-      <div className="lg:p-10 mx-auto p-5 h-screen">{children}</div>
+      </div>
+      <div className="flex-1 h-screen overflow-y-auto">
+        <DashboardTop />
+        <div className="lg:p-10 mx-auto p-5">{children}</div>
+      </div>
     </div>
   );
 };

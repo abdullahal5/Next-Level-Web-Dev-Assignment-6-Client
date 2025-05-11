@@ -5,6 +5,7 @@ import { Checkbox } from "@nextui-org/checkbox";
 import dynamic from "next/dynamic";
 // eslint-disable-next-line import/order
 import Image from "next/image";
+import "react-quill/dist/quill.snow.css";
 
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,

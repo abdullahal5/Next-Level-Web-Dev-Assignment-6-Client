@@ -2,15 +2,16 @@
 "use client";
 import { Button } from "@nextui-org/button";
 import Image from "next/image";
-import { Checkbox } from "@nextui-org/checkbox";
 import { FieldValues } from "react-hook-form";
 import { useState } from "react";
 import { toast } from "sonner";
 import dynamic from "next/dynamic";
-
+import "react-quill/dist/quill.snow.css";
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
 });
+
+import { Checkbox } from "@nextui-org/checkbox";
 
 import GHInput from "../form/GHInput";
 import GHForm from "../form/GHForm";

@@ -19,20 +19,23 @@ import { useSearchParams } from "next/navigation";
 import { CgGenderMale } from "react-icons/cg";
 import { useDisclosure } from "@nextui-org/modal";
 
-import EditProfile from "../edit-profile/page";
-
 import { useAppSelector } from "@/src/redux/hook";
-import { IAuthor, IPost } from "@/src/types";
+import { IAuthor, IMyPost, IPost } from "@/src/types";
 import { useGetMeQuery } from "@/src/redux/features/auth/authApi";
 import DashboardMyPostCard from "@/src/components/DashboardMyPostCard";
 import { useGetMyPostQuery } from "@/src/redux/features/post/postApi";
 import GlobalModal from "@/src/components/UI/GlobalModal";
 import CreatePost from "@/src/components/UI/CreatePost";
+import EditProfile from "@/src/components/UI/EditProfile";
+import { useState } from "react";
+import UpdateContent from "@/src/components/UpdateContent";
 
 const ResponsiveSocialProfile = () => {
   const { user } = useAppSelector((state) => state.auth);
+  const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const queryId = searchParams.get("userId");
+
   const {
     isOpen: isEditModalOpen,
     onOpen: onEditModalOpen,
@@ -45,6 +48,18 @@ const ResponsiveSocialProfile = () => {
     onClose: onPostModalClose,
   } = useDisclosure();
 
+  const {
+    isOpen: isPostEditModalOpen,
+    onOpen: onPostEditModalOpen,
+    onClose: onPostEditModalClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isPostDeleteModalOpen,
+    onOpen: onPostDeleteModalOpen,
+    onClose: onPostDeleteModalClose,
+  } = useDisclosure();
+
   const { data: getMe, isFetching } = useGetMeQuery({
     _id: queryId ? queryId : user?.userId,
   });
@@ -54,9 +69,13 @@ const ResponsiveSocialProfile = () => {
   const { data: getMyPost, isLoading: getMyPostLoading } =
     useGetMyPostQuery(undefined);
 
+  const singlePost = getMyPost?.data?.find(
+    (item: IMyPost) => item?._id === selectedPostId
+  );
+
   return (
     <>
-      <div className="max-w-5xl mx-auto shadow-xl rounded-b-xl mt-10 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl pt-10 mx-auto shadow-xl rounded-b-xl mt-10 px-4 sm:px-6 lg:px-8">
         <div className="relative h-[180px]">
           <Image
             alt="Cover"
@@ -260,8 +279,14 @@ const ResponsiveSocialProfile = () => {
 
               <div className="space-y-5">
                 {getMyPost?.data?.length > 0 ? (
-                  getMyPost?.data?.map((post: IPost) => (
-                    <DashboardMyPostCard key={post._id} post={post} />
+                  getMyPost?.data?.map((post: IMyPost) => (
+                    <DashboardMyPostCard
+                      key={post._id}
+                      post={post}
+                      onPostDeleteModalOpen={onPostDeleteModalOpen}
+                      setSelectedPostId={setSelectedPostId}
+                      onPostEditModalOpen={onPostEditModalOpen}
+                    />
                   ))
                 ) : (
                   <p className="text-center text-lg">
@@ -280,6 +305,24 @@ const ResponsiveSocialProfile = () => {
         onClose={onEditModalClose}
       >
         <EditProfile />
+      </GlobalModal>
+
+      <GlobalModal
+        action="Create Post"
+        isOpen={isPostEditModalOpen}
+        size="xl"
+        onClose={onPostEditModalClose}
+      >
+        <UpdateContent onClose={onPostEditModalClose} post={singlePost} />
+      </GlobalModal>
+
+      <GlobalModal
+        action="Create Post"
+        isOpen={isPostDeleteModalOpen}
+        size="xl"
+        onClose={onPostDeleteModalClose}
+      >
+        Delete {selectedPostId}
       </GlobalModal>
     </>
   );

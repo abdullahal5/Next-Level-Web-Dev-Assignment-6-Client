@@ -1,7 +1,7 @@
 "use client";
 import { Key, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FiSearch, FiTrendingUp, FiStar, FiClock } from "react-icons/fi";
+import { FiSearch, FiStar, FiClock } from "react-icons/fi";
 import { FaCrown } from "react-icons/fa";
 
 import { useGetAllPostQuery } from "@/src/redux/features/post/postApi";
@@ -62,7 +62,7 @@ const SideInfo = () => {
   // ];
 
   return (
-    <div className="w-full space-y-8">
+    <div className="w-full space-y-8 sticky top-20">
       <form className="relative" onSubmit={handleSearch}>
         <input
           className="w-full py-3 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md pl-10 pr-4 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -79,11 +79,11 @@ const SideInfo = () => {
         </button>
       </form>
 
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+      {/* <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
         <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white flex items-center">
           <FiTrendingUp className="mr-2 text-blue-500" /> Trending Topics
         </h2>
-        {/* <ul className="space-y-2">
+        <ul className="space-y-2">
           {trendingTopics?.map((topic, index) => (
             <li
               key={index}
@@ -95,8 +95,8 @@ const SideInfo = () => {
               </a>
             </li>
           ))}
-        </ul> */}
-      </div>
+        </ul>
+      </div> */}
 
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
         <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white flex items-center">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -11,10 +11,10 @@ import {
   IoKeyOutline,
   IoLogOutOutline,
 } from "react-icons/io5";
-import { CiGrid42 } from "react-icons/ci";
 import { FaDollarSign, FaRegHeart, FaUser } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import { RiEditLine } from "react-icons/ri";
+import { CiGrid42 } from "react-icons/ci";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
 import { Button } from "@nextui-org/button";
 import { useTheme } from "next-themes";
@@ -26,8 +26,7 @@ import { logout } from "@/src/redux/features/auth/authSlice";
 
 const userRoutes = [
   { item: "Dashboard", icon: MdOutlineDashboardCustomize, link: "/dashboard" },
-  { item: "Profile", icon: CgProfile, link: "/dashboard/profile" },
-  { item: "My Content", icon: CiGrid42, link: "/dashboard/my-content" },
+  { item: "Profile", icon: CgProfile, link: "/profile" },
   { item: "Favourites", icon: FaRegHeart, link: "/dashboard/favourites" },
   {
     item: "Payment History",
@@ -45,7 +44,7 @@ const userRoutes = [
 
 const adminRoutes = [
   { item: "Dashboard", icon: MdOutlineDashboardCustomize, link: "/dashboard" },
-  { item: "Profile", icon: CgProfile, link: "/dashboard/profile" },
+  { item: "Profile", icon: CgProfile, link: "/profile" },
   { item: "All Users", icon: FaUser, link: "/dashboard/manage-Users" },
   { item: "All Posts", icon: CiGrid42, link: "/dashboard/manage-posts" },
   {
@@ -65,10 +64,10 @@ const adminRoutes = [
 const Sidebar = () => {
   const { user } = useAppSelector((state) => state.auth);
   const [isOpen, setIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [isMounted, setIsMounted] = useState(false);
   const { theme, setTheme } = useTheme();
 
   const toggleSidebar = useCallback(() => setIsOpen((prev) => !prev), []);
@@ -76,7 +75,6 @@ const Sidebar = () => {
 
   useEffect(() => {
     setIsMounted(true);
-
     const handleOutsideClick = (event: MouseEvent) => {
       if (isOpen && event.target instanceof Element) {
         const sidebar = document.getElementById("sidebar");
@@ -94,9 +92,7 @@ const Sidebar = () => {
 
     document.addEventListener("click", handleOutsideClick);
 
-    return () => {
-      document.removeEventListener("click", handleOutsideClick);
-    };
+    return () => document.removeEventListener("click", handleOutsideClick);
   }, [isOpen, closeSidebar]);
 
   const links = user?.role === "admin" ? adminRoutes : userRoutes;
@@ -111,8 +107,20 @@ const Sidebar = () => {
 
   return (
     <>
+      <Button
+        isIconOnly
+        aria-label="Open Sidebar"
+        className="lg:hidden fixed top-4 left-4 z-50"
+        id="toggle-sidebar"
+        onClick={toggleSidebar}
+      >
+        <CiGrid42 size={24} />
+      </Button>
+
       <motion.div
-        className={`relative overflow-hidden h-full w-80 bg-white dark:bg-gray-900 shadow-xl overflow-y-auto`}
+        className={`lg:relative md:fixed fixed z-50 border-r dark:border-gray-700 h-full bg-white dark:bg-gray-900 shadow-xl overflow-y-auto transition-all duration-300 ease-in-out transform ${
+          isOpen ? "translate-x-0 w-80" : "-translate-x-full w-0"
+        } lg:translate-x-0 lg:w-80`}
         id="sidebar"
         initial={false}
       >
@@ -149,11 +157,11 @@ const Sidebar = () => {
               >
                 <div
                   className={`flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors duration-150
-                              ${
-                                pathname === item.link
-                                  ? "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-400"
-                                  : "hover:bg-gray-100 dark:hover:bg-gray-800"
-                              }`}
+                    ${
+                      pathname === item.link
+                        ? "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-400"
+                        : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                    }`}
                 >
                   <item.icon className="text-xl" />
                   <span className="text-sm font-medium">{item.item}</span>
@@ -165,7 +173,7 @@ const Sidebar = () => {
 
         <div className="absolute bottom-0 left-0 right-0 p-6">
           <Button
-            className="w-full  justify-start"
+            className="w-full justify-start"
             startContent={theme === "dark" ? "🌙" : "☀️"}
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           >

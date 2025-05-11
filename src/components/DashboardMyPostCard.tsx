@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable prettier/prettier */
 "use client";
 
@@ -6,22 +8,63 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaComment, FaShare, FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 import { Card, CardBody, CardFooter } from "@nextui-org/card";
 import { Avatar } from "@nextui-org/avatar";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from "@nextui-org/dropdown";
 import { Button } from "@nextui-org/button";
 import { Divider } from "@nextui-org/divider";
 import { BsThreeDots } from "react-icons/bs";
+import { useEffect, useRef, useState } from "react";
 
-import { IPost } from "../types";
+import { IMyPost } from "../types";
 import { formatDate } from "../utils/dateFormat";
 import { useAppSelector } from "../redux/hook";
 
-const EnhancedDashboardMyPostCard = ({ post }: { post: IPost }) => {
+const EnhancedDashboardMyPostCard = ({
+  post,
+  onPostEditModalOpen,
+  onPostDeleteModalOpen,
+  setSelectedPostId,
+}: {
+  post: IMyPost;
+  onPostEditModalOpen: () => void;
+  onPostDeleteModalOpen: () => void;
+  setSelectedPostId: (id: string) => void;
+}) => {
   const { user } = useAppSelector((state) => state.auth);
+  const [isSettingOpen, setIsSettingOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const toggleDropdown = () => setIsSettingOpen((prev) => !prev);
+  const closeDropdown = () => setIsSettingOpen(false);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        closeDropdown();
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
+  const handlePostEditModalOpen = (postId: string) => {
+    if (setSelectedPostId) {
+      setSelectedPostId(postId);
+      onPostEditModalOpen();
+    }
+  };
+
+  const handlePostDeleteModalOpen = (postId: string) => {
+    if (setSelectedPostId) {
+      setSelectedPostId(postId);
+      onPostDeleteModalOpen();
+    }
+  };
 
   return (
     <Card className="w-full max-w-2xl mx-auto overflow-hidden transition-shadow duration-300 hover:shadow-xl">
@@ -57,25 +100,59 @@ const EnhancedDashboardMyPostCard = ({ post }: { post: IPost }) => {
               </p>
             </div>
           </div>
-          <Dropdown>
-            <DropdownTrigger>
-              <Button isIconOnly className="">
-                <BsThreeDots />
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Post Actions">
-              {post?.author?._id === user?.userId && (
-                <DropdownItem key="edit">Edit</DropdownItem>
-              )}
-              {post?.author?._id === user?.userId && (
-                <DropdownItem key="delete">Delete</DropdownItem>
-              )}
-              {post?.author?._id !== user?.userId && (
-                <DropdownItem key="bookmark">Bookmark</DropdownItem>
-              )}
-              <DropdownItem key="share">Share</DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
+          <div ref={dropdownRef} className="relative">
+            <button
+              aria-label="Open actions menu"
+              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+              onClick={toggleDropdown}
+            >
+              <BsThreeDots />
+            </button>
+            {isSettingOpen && (
+              <Card className="absolute z-20 p-2 right-0 mt-2 w-40 shadow-lg rounded-md overflow-hidden">
+                <ul className="text-sm space-y-2">
+                  {post?.author?._id === user?.userId && (
+                    <>
+                      <Button
+                        className="px-4 py-2 rounded-md w-full cursor-pointer"
+                        variant="bordered"
+                        onPress={() => handlePostEditModalOpen(post?._id)}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        className="px-4 py-2 w-full rounded-md cursor-pointer"
+                        variant="bordered"
+                        onPress={() => handlePostDeleteModalOpen(post?._id)}
+                      >
+                        Delete
+                      </Button>
+                    </>
+                  )}
+                  {post?.author?._id !== user?.userId && (
+                    <Button
+                      className="px-4 py-2 w-full cursor-pointer"
+                      variant="bordered"
+                      onClick={() => {
+                        closeDropdown();
+                      }}
+                    >
+                      Bookmark
+                    </Button>
+                  )}
+                  <Button
+                    className="px-4 py-2 w-full rounded-md cursor-pointer"
+                    variant="bordered"
+                    onClick={() => {
+                      closeDropdown();
+                    }}
+                  >
+                    Share
+                  </Button>
+                </ul>
+              </Card>
+            )}
+          </div>
         </div>
         <h1 className="text-2xl mt-2 font-semibold">{post?.title}</h1>
         <p className="text-sm my-2">{post.bio}</p>

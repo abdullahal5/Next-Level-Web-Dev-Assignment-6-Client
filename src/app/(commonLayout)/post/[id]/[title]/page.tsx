@@ -168,7 +168,7 @@ const BlogsDetailsPage = ({
 
   return (
     <>
-      <div className="max-w-4xl mx-auto my-10 px-4">
+      <div className="max-w-4xl pt-10 mx-auto my-10 px-4">
         <Card className="w-full">
           <CardHeader className="flex-col items-start">
             <h1 className="text-3xl font-bold mb-2">{data.title}</h1>
